@@ -1,0 +1,34 @@
+name: retune
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_native_splash: ^2.4.6
+  google_fonts: ^6.3.1
+  http: ^1.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+
+flutter_native_splash:
+  color: "#DE3163"
+  image: assets/icon.png
+  android_12: 
+    image: assets/icon.png
+  android: true
+  ios: false
+  web: false
