@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:retune/providers/player_provider.dart';
+import 'package:retune/providers/search_provider.dart';
 import 'package:retune/screens/home_screen.dart';
-import 'package:retune/util.dart';
 
 void main() {
   runApp(const MainApp());
@@ -12,26 +14,30 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: cerise,
-          brightness: Brightness.light,
-          dynamicSchemeVariant: DynamicSchemeVariant.expressive,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
+        ChangeNotifierProvider(create: (context) => PlayerProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.pink,
+            brightness: Brightness.light,
+          ),
+          fontFamily: GoogleFonts.montserrat().fontFamily,
         ),
-        fontFamily: GoogleFonts.montserrat().fontFamily,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: cerise,
-          brightness: Brightness.dark,
-          dynamicSchemeVariant: DynamicSchemeVariant.expressive,
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.pink,
+            brightness: Brightness.dark,
+          ),
+          fontFamily: GoogleFonts.montserrat().fontFamily,
         ),
-        fontFamily: GoogleFonts.montserrat().fontFamily,
+        themeMode: ThemeMode.system,
+        home: const Scaffold(body: HomeScreen()),
       ),
-      themeMode: ThemeMode.system,
-      home: const Scaffold(body: HomeScreen()),
     );
   }
 }

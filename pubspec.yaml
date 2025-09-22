@@ -7,11 +7,14 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
+  audioplayers: ^6.5.1
+  cached_network_image: ^3.4.1
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.4.6
   google_fonts: ^6.3.1
   http: ^1.5.0
+  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_test:
