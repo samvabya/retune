@@ -45,22 +45,31 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   child: TextField(
                     controller: _searchController,
                     autofocus: true,
 
                     textAlignVertical: TextAlignVertical.center,
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Search songs, albums and artists',
+                      hintStyle: Theme.of(context).textTheme.titleSmall!
+                          .copyWith(
+                            color: Theme.of(context).colorScheme.surface,
+                          ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: IconButton(
-                                icon: const Icon(Icons.clear),
+                                icon: Icon(
+                                  Icons.clear,
+                                  color: Theme.of(context).colorScheme.surface,
+                                ),
                                 onPressed: () {
                                   _searchController.clear();
                                   context.read<SearchProvider>().clearSearch();

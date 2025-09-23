@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:retune/providers/player_provider.dart';
 import 'package:retune/providers/search_provider.dart';
 import 'package:retune/screens/home_screen.dart';
+import 'package:retune/util.dart';
 
 void main() {
   runApp(const MainApp());
@@ -22,20 +23,19 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.pink,
-            brightness: Brightness.light,
-          ),
-          fontFamily: GoogleFonts.montserrat().fontFamily,
-        ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.pink,
+          colorScheme: ColorScheme(
             brightness: Brightness.dark,
+            primary: primary,
+            onPrimary: text,
+            secondary: secondary,
+            onSecondary: text,
+            error: surface,
+            onError: text,
+            surface: surface,
+            onSurface: text,
           ),
-          fontFamily: GoogleFonts.montserrat().fontFamily,
+          fontFamily: GoogleFonts.inter().fontFamily,
         ),
-        themeMode: ThemeMode.system,
         home: const Scaffold(body: HomeScreen()),
       ),
     );

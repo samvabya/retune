@@ -29,6 +29,7 @@ class PlayerProvider with ChangeNotifier {
   String _errorMessage = '';
   List<DetailedSongModel> _queue = [];
   int _currentIndex = 0;
+  ColorScheme? _imageColorScheme;
 
   // Getters
   DetailedSongModel? get currentSong => _currentSong;
@@ -41,6 +42,7 @@ class PlayerProvider with ChangeNotifier {
   String get errorMessage => _errorMessage;
   List<DetailedSongModel> get queue => _queue;
   int get currentIndex => _currentIndex;
+  ColorScheme? get imageColorScheme => _imageColorScheme;
 
   bool get isPlaying => _state == LocalPlayerState.playing;
   bool get isPaused => _state == LocalPlayerState.paused;
@@ -123,6 +125,8 @@ class PlayerProvider with ChangeNotifier {
 
       await _audioPlayer.play(UrlSource(audioUrl));
       _state = LocalPlayerState.playing;
+      notifyListeners();
+      _imageColorScheme = await ColorScheme.fromImageProvider(provider: NetworkImage(song.imageUrl));
       notifyListeners();
     } catch (e) {
       _state = LocalPlayerState.error;

@@ -11,6 +11,9 @@ class PlayerControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PlayerProvider>(
       builder: (context, player, child) {
+        ColorScheme colorScheme =
+            player.imageColorScheme ?? Theme.of(context).colorScheme;
+
         return GestureDetector(
           onTap: () => showModalBottomSheet(
             isScrollControlled: true,
@@ -18,29 +21,30 @@ class PlayerControls extends StatelessWidget {
             builder: (context) => PlayerScreen(),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
+            margin: const EdgeInsets.symmetric(horizontal: 0),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              color: colorScheme.primary,
+              borderRadius: BorderRadius.circular(0),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: colorScheme.primaryContainer,
+              //     blurRadius: 8,
+              //     offset: const Offset(0, 2),
+              //   ),
+              // ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const SizedBox(height: 5),
                 // Song info
                 if (player.currentSong != null) ...[
                   // const SizedBox(height: 8),
                   Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
+                      const SizedBox(width: 10),
+                      ClipOval(
+                        // borderRadius: BorderRadius.circular(16),
                         child: Hero(
                           tag: player.currentSong!.id,
                           child: CachedNetworkImage(
@@ -70,16 +74,17 @@ class PlayerControls extends StatelessWidget {
                           children: [
                             Text(
                               player.currentSong!.name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
+                                color: colorScheme.onPrimary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
                               player.currentSong!.primaryArtistsText,
-                              style: const TextStyle(
-                                color: Colors.grey,
+                              style: TextStyle(
+                                color: colorScheme.onPrimary.withOpacity(0.8),
                                 fontSize: 12,
                               ),
                               maxLines: 1,
@@ -88,10 +93,34 @@ class PlayerControls extends StatelessWidget {
                           ],
                         ),
                       ),
-                      _buildPlayPauseButton(player, context),
+                      _buildPlayPauseButton(player, context, colorScheme),
                     ],
                   ),
                 ],
+                const SizedBox(height: 5),
+                SliderTheme(
+                  data: SliderThemeData(
+                    thumbShape: RoundSliderThumbShape(
+                      disabledThumbRadius: 0,
+                      enabledThumbRadius: 0,
+                    ),
+                    activeTrackColor: colorScheme.onPrimary,
+                    inactiveTrackColor: colorScheme.onPrimary.withOpacity(0.5),
+                    trackHeight: 3,
+                    trackShape: RectangularSliderTrackShape(),
+                  ),
+                  child: Slider(
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    value: player.progress,
+                    onChanged: (value) {
+                      final position = Duration(
+                        milliseconds: (value * player.duration.inMilliseconds)
+                            .round(),
+                      );
+                      player.seek(position);
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -100,17 +129,22 @@ class PlayerControls extends StatelessWidget {
     );
   }
 
-  Widget _buildPlayPauseButton(PlayerProvider player, BuildContext context) {
+  Widget _buildPlayPauseButton(
+    PlayerProvider player,
+    BuildContext context,
+    ColorScheme colorScheme,
+  ) {
+    double _btnSize = 48;
     if (player.isLoading) {
       return Container(
-        width: 48,
-        height: 48,
+        width: _btnSize,
+        height: _btnSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+          color: colorScheme.primary,
         ),
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: colorScheme.onPrimary,
           strokeWidth: 2,
         ),
       );
@@ -119,16 +153,16 @@ class PlayerControls extends StatelessWidget {
     return IconButton(
       onPressed: player.isPlaying ? player.pause : player.play,
       icon: Container(
-        width: 48,
-        height: 48,
+        width: _btnSize,
+        height: _btnSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+          color: colorScheme.primary,
         ),
         child: Icon(
           player.isPlaying ? Icons.pause : Icons.play_arrow,
-          color: Theme.of(context).colorScheme.onPrimary,
-          size: 24,
+          color: colorScheme.onPrimary,
+          size: _btnSize - 10,
         ),
       ),
     );

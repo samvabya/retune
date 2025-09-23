@@ -12,35 +12,18 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.large(
-            leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-            flexibleSpace: FlexibleSpaceBar(
-              title: Image.asset('assets/retune.png', height: 16),
-            ),
-          ),
-          SliverFillRemaining(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.8,
-                    child: ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.surface,
-                        BlendMode.hue,
-                      ),
-                      child: Image.asset('assets/girl.png'),
-                    ),
-                  ),
-                ],
-              ),
+          SliverAppBar(
+            floating: false,
+            pinned: true,
+            title: Text(
+              'New Songs',
+              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             ),
           ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Consumer<PlayerProvider>(
+      bottomSheet: Consumer<PlayerProvider>(
         builder: (context, player, child) {
           if (player.currentSong == null) return const SizedBox.shrink();
           return const PlayerControls();
@@ -60,13 +43,15 @@ class HomeScreen extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               child: Center(
                 child: Text(
                   'Search songs, albums and artists',
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
                 ),
               ),
             ),

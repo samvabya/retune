@@ -3,132 +3,165 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/providers/player_provider.dart';
 
-class PlayerScreen extends StatelessWidget {
+class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
+
+  @override
+  State<PlayerScreen> createState() => _PlayerScreenState();
+}
+
+class _PlayerScreenState extends State<PlayerScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      duration: const Duration(seconds: 20),
+      vsync: this,
+    );
+    _controller.repeat();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     double _imageSize = 200;
 
     return Material(
-      color: Theme.of(context).colorScheme.onPrimaryFixed,
       child: Consumer<PlayerProvider>(
         builder: (context, player, child) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: AspectRatio(
-                  aspectRatio: 9 / 16,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(28),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Hero(
-                                tag: player.currentSong!.id,
-                                child: CachedNetworkImage(
-                                  imageUrl: player.currentSong!.imageUrl,
-                                  // width: _imageSize,
-                                  // height: _imageSize,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => Container(
-                                    width: _imageSize,
-                                    height: _imageSize,
-                                    color: Colors.grey[300],
-                                    child: const Icon(Icons.music_note),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      Container(
-                                        width: _imageSize,
-                                        height: _imageSize,
-                                        color: Colors.grey[300],
-                                        child: const Icon(Icons.music_note),
-                                      ),
-                                ),
+          ColorScheme colorScheme =
+              player.imageColorScheme ?? Theme.of(context).colorScheme;
+
+          player.isPlaying ? _controller.repeat() : _controller.stop();
+          return Container(
+            decoration: BoxDecoration(color: colorScheme.primary),
+            child: Padding(
+              padding: const EdgeInsets.all(25),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: ClipOval(
+                      // borderRadius: BorderRadius.circular(28),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Hero(
+                          tag: player.currentSong!.id,
+                          child: RotationTransition(
+                            turns: Tween(
+                              begin: 0.0,
+                              end: 1.0,
+                            ).animate(_controller),
+                            child: CachedNetworkImage(
+                              imageUrl: player.currentSong!.imageUrl,
+                              // width: _imageSize,
+                              // height: _imageSize,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                width: _imageSize,
+                                height: _imageSize,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.music_note),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                width: _imageSize,
+                                height: _imageSize,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.music_note),
                               ),
                             ),
                           ),
                         ),
-                        Row(
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      // const SizedBox(width: 10),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            player.currentSong!.primaryArtistsText,
+                            style: TextStyle(
+                              color: colorScheme.onPrimary.withOpacity(0.8),
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            player.currentSong!.name,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 20,
+                        children: [
+                          IconButton(
+                            onPressed: player.hasPrevious
+                                ? player.previous
+                                : null,
+                            icon: Icon(
+                              Icons.skip_previous,
+                              // size: 50,
+                              color: player.hasPrevious
+                                  ? colorScheme.primary
+                                  : colorScheme.onPrimary,
+                            ),
+                          ),
+                          _buildPlayPauseButton(player, context, colorScheme),
+                          IconButton(
+                            onPressed: player.hasNext ? player.next : null,
+                            icon: Icon(
+                              Icons.skip_next,
+                              // size: 50,
+                              color: player.hasNext
+                                  ? colorScheme.primary
+                                  : colorScheme.onPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // const SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
                           children: [
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    player.currentSong!.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    player.currentSong!.primaryArtistsText,
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
+                            SliderTheme(
+                              data: SliderThemeData(
+                                thumbShape: RoundSliderThumbShape(
+                                  disabledThumbRadius: 0,
+                                  enabledThumbRadius: 0,
+                                ),
+                                activeTrackColor: colorScheme.onPrimary,
+                                inactiveTrackColor: colorScheme.onPrimary
+                                    .withOpacity(0.5),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: player.toggleShuffle,
-                              icon: Icon(
-                                Icons.shuffle,
-                                color: player.shuffleMode
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: player.toggleRepeat,
-                              icon: Icon(
-                                player.repeatMode == RepeatMode.one
-                                    ? Icons.repeat_one
-                                    : Icons.repeat,
-                                color: player.repeatMode != RepeatMode.none
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        Row(
-                          children: [
-                            Text(
-                              _formatDuration(player.position),
-                              style: const TextStyle(fontSize: 10),
-                            ),
-                            Expanded(
                               child: Slider(
-                                padding: EdgeInsets.all(16),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: 10,
+                                ),
                                 value: player.progress,
                                 onChanged: (value) {
                                   final position = Duration(
@@ -140,42 +173,74 @@ class PlayerScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            Text(
-                              _formatDuration(player.duration),
-                              style: const TextStyle(fontSize: 10),
+                            Row(
+                              children: [
+                                Text(
+                                  _formatDuration(player.position),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: colorScheme.onPrimary.withOpacity(
+                                      0.8,
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                Text(
+                                  _formatDuration(player.duration),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: colorScheme.onPrimary.withOpacity(
+                                      0.8,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                              onPressed: player.hasPrevious
-                                  ? player.previous
-                                  : null,
-                              icon: const Icon(Icons.skip_previous),
+                      ),
+                      // const SizedBox(height: 15),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: player.toggleRepeat,
+                            icon: Icon(
+                              player.repeatMode == RepeatMode.one
+                                  ? Icons.repeat_one
+                                  : Icons.repeat,
+                              color: player.repeatMode != RepeatMode.none
+                                  ? colorScheme.primary
+                                  : colorScheme.onPrimary,
                             ),
-                            _buildPlayPauseButton(player, context),
-                            IconButton(
-                              onPressed: player.hasNext ? player.next : null,
-                              icon: const Icon(Icons.skip_next),
+                          ),
+                          Spacer(),
+                          IconButton(
+                            onPressed: player.toggleShuffle,
+                            icon: Icon(
+                              Icons.shuffle,
+                              color: player.shuffleMode
+                                  ? colorScheme.primary
+                                  : colorScheme.onPrimary,
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildPlayPauseButton(PlayerProvider player, BuildContext context) {
+  Widget _buildPlayPauseButton(
+    PlayerProvider player,
+    BuildContext context,
+    ColorScheme colorScheme,
+  ) {
     double _btnSize = 70;
     if (player.isLoading) {
       return Container(
@@ -183,10 +248,10 @@ class PlayerScreen extends StatelessWidget {
         height: _btnSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+          color: colorScheme.primary,
         ),
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: colorScheme.onPrimary,
           strokeWidth: 2,
         ),
       );
@@ -199,12 +264,12 @@ class PlayerScreen extends StatelessWidget {
         height: _btnSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+          color: colorScheme.primary,
         ),
         child: Icon(
           player.isPlaying ? Icons.pause : Icons.play_arrow,
-          color: Theme.of(context).colorScheme.onPrimary,
-          size: _btnSize / 2,
+          color: colorScheme.onPrimary,
+          size: _btnSize - 20,
         ),
       ),
     );

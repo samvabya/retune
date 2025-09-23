@@ -19,63 +19,58 @@ class SearchResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: ListTile(
-        dense: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
+    return ListTile(
+      dense: true,
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(type == 'Song' ? 50 : 0),
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          // width: 56,
+          // height: 56,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
             width: 56,
             height: 56,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              width: 56,
-              height: 56,
-              color: Colors.grey[300],
-              child: const Icon(Icons.music_note),
-            ),
-            errorWidget: (context, url, error) => Container(
-              width: 56,
-              height: 56,
-              color: Colors.grey[300],
-              child: const Icon(Icons.music_note),
-            ),
+            color: Colors.grey[300],
+            child: const Icon(Icons.music_note),
+          ),
+          errorWidget: (context, url, error) => Container(
+            width: 56,
+            height: 56,
+            color: Colors.grey[300],
+            child: const Icon(Icons.music_note),
           ),
         ),
-        title: Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
-            const SizedBox(height: 2),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                type.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ),
-          ],
-        ),
-        onTap: onTap,
       ),
+      title: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+          // const SizedBox(height: 2),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          //   decoration: BoxDecoration(
+          //     color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+          //     borderRadius: BorderRadius.circular(12),
+          //   ),
+          //   child: Text(
+          //     type.toUpperCase(),
+          //     style: TextStyle(
+          //       fontSize: 10,
+          //       fontWeight: FontWeight.bold,
+          //       color: Theme.of(context).colorScheme.secondary,
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
+      onTap: onTap,
     );
   }
 }
