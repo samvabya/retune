@@ -3,10 +3,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/providers/player_provider.dart';
 import 'package:retune/providers/search_provider.dart';
+import 'package:retune/providers/song_provider.dart';
 import 'package:retune/screens/home_screen.dart';
+import 'package:retune/services/hive_service.dart';
 import 'package:retune/util.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveService.init();
+  
   runApp(const MainApp());
 }
 
@@ -19,6 +24,7 @@ class MainApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (context) => PlayerProvider()),
+        ChangeNotifierProvider(create: (context) => SongProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -34,7 +40,7 @@ class MainApp extends StatelessWidget {
             surface: surface,
             onSurface: text,
           ),
-          fontFamily: GoogleFonts.inter().fontFamily,
+          fontFamily: GoogleFonts.interTight().fontFamily,
         ),
         home: const Scaffold(body: HomeScreen()),
       ),

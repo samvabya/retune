@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:retune/models/models.dart';
-import 'package:retune/services/saavn_search_service.dart';
+import 'package:retune/services/saavn_service.dart';
 
 enum SearchState { idle, loading, success, error }
 
 class SearchProvider with ChangeNotifier {
-  final SaavnSearchService _searchService = SaavnSearchService();
+  final SaavnService _searchService = SaavnService();
   
   SearchResponse? _searchResponse;
   SearchState _state = SearchState.idle;

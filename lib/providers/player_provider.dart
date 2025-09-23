@@ -1,7 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:retune/models/models.dart';
-import 'package:retune/services/song_service.dart';
+import 'package:retune/providers/song_provider.dart';
+import 'package:retune/services/saavn_service.dart';
 
 enum LocalPlayerState {
   stopped,
@@ -17,7 +18,7 @@ enum RepeatMode { none, one, all }
 
 class PlayerProvider with ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final SongService _songService = SongService();
+  final SaavnService _songService = SaavnService();
 
   DetailedSongModel? _currentSong;
   LocalPlayerState _state = LocalPlayerState.stopped;
@@ -104,7 +105,7 @@ class PlayerProvider with ChangeNotifier {
         throw Exception('Song not found');
       }
 
-      await _playSongModel(song);
+      await playSongModel(song);
     } catch (e) {
       _state = LocalPlayerState.error;
       _errorMessage = e.toString();
@@ -112,7 +113,7 @@ class PlayerProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _playSongModel(DetailedSongModel song) async {
+  Future<void> playSongModel(DetailedSongModel song) async {
     try {
       _currentSong = song;
 
@@ -126,8 +127,13 @@ class PlayerProvider with ChangeNotifier {
       await _audioPlayer.play(UrlSource(audioUrl));
       _state = LocalPlayerState.playing;
       notifyListeners();
-      _imageColorScheme = await ColorScheme.fromImageProvider(provider: NetworkImage(song.imageUrl));
+      _imageColorScheme = await ColorScheme.fromImageProvider(
+        provider: NetworkImage(song.imageUrl),
+      );
       notifyListeners();
+
+      // Save the song to the local database
+      await SongProvider().addSong(song);
     } catch (e) {
       _state = LocalPlayerState.error;
       _errorMessage = e.toString();
@@ -256,7 +262,7 @@ class PlayerProvider with ChangeNotifier {
 
     if (nextIndex < _queue.length) {
       _currentIndex = nextIndex;
-      await _playSongModel(_queue[_currentIndex]);
+      await playSongModel(_queue[_currentIndex]);
     }
   }
 
@@ -270,7 +276,7 @@ class PlayerProvider with ChangeNotifier {
 
     if (prevIndex >= 0) {
       _currentIndex = prevIndex;
-      await _playSongModel(_queue[_currentIndex]);
+      await playSongModel(_queue[_currentIndex]);
     }
   }
 
@@ -298,6 +304,15 @@ class PlayerProvider with ChangeNotifier {
     _queue = List.from(songs);
     _currentIndex = startIndex.clamp(0, _queue.length - 1);
     notifyListeners();
+  }
+
+  Future<void> addToQueueId(String songId) async {
+      final song = await _songService.getSongById(songId);
+      if (song == null) {
+        throw Exception('Song not found');
+      }
+
+      addToQueue(song);
   }
 
   void addToQueue(DetailedSongModel song) {

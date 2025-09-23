@@ -13,13 +13,19 @@ dependencies:
     sdk: flutter
   flutter_native_splash: ^2.4.6
   google_fonts: ^6.3.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   http: ^1.5.0
+  path_provider: ^2.1.5
   provider: ^6.1.5+1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  hive_generator: ^2.0.0
+  build_runner: ^2.4.0
 
 flutter:
   uses-material-design: true
@@ -28,7 +34,7 @@ flutter:
     - assets/
 
 flutter_native_splash:
-  color: "#DE3163"
+  color: "#DD1A1C"
   image: assets/icon.png
   android_12: 
     image: assets/icon.png
