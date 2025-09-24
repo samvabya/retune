@@ -6,7 +6,7 @@ enum SearchState { idle, loading, success, error }
 
 class SearchProvider with ChangeNotifier {
   final SaavnService _searchService = SaavnService();
-  
+
   SearchResponse? _searchResponse;
   SearchState _state = SearchState.idle;
   String _errorMessage = '';
@@ -36,7 +36,7 @@ class SearchProvider with ChangeNotifier {
       _errorMessage = e.toString();
       _searchResponse = null;
     }
-    
+
     notifyListeners();
   }
 

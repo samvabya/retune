@@ -33,7 +33,7 @@ class _PlayerScreenState extends State<PlayerScreen>
 
   @override
   Widget build(BuildContext context) {
-    double _imageSize = 200;
+    double imageSize = 200;
 
     return Consumer<PlayerProvider>(
       builder: (context, player, child) {
@@ -83,15 +83,15 @@ class _PlayerScreenState extends State<PlayerScreen>
                                     // height: _imageSize,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Container(
-                                      width: _imageSize,
-                                      height: _imageSize,
+                                      width: imageSize,
+                                      height: imageSize,
                                       color: Colors.grey[300],
                                       child: const Icon(Icons.music_note),
                                     ),
                                     errorWidget: (context, url, error) =>
                                         Container(
-                                          width: _imageSize,
-                                          height: _imageSize,
+                                          width: imageSize,
+                                          height: imageSize,
                                           color: Colors.grey[300],
                                           child: const Icon(Icons.music_note),
                                         ),
@@ -334,9 +334,22 @@ class _PlayerScreenState extends State<PlayerScreen>
       ),
       trailing: IconButton(
         onPressed: () {},
-        icon: Icon(Icons.queue_music, color: textColor),
+        icon: Icon(Icons.drag_handle, color: textColor),
       ),
-      onTap: () {},
+      onTap: () => _onSongTap(context, song),
+    );
+  }
+
+  void _onSongTap(BuildContext context, DetailedSongModel song) {
+    // Play the song using the player provider
+    context.read<PlayerProvider>().playSongModel(song);
+    context.read<PlayerProvider>().clearQueue();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Playing ${song.name}'),
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 
@@ -345,11 +358,11 @@ class _PlayerScreenState extends State<PlayerScreen>
     BuildContext context,
     ColorScheme colorScheme,
   ) {
-    double _btnSize = 70;
+    double btnSize = 70;
     if (player.isLoading) {
       return Container(
-        width: _btnSize,
-        height: _btnSize,
+        width: btnSize,
+        height: btnSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: colorScheme.primary,
@@ -364,8 +377,8 @@ class _PlayerScreenState extends State<PlayerScreen>
     return IconButton(
       onPressed: player.isPlaying ? player.pause : player.play,
       icon: Container(
-        width: _btnSize,
-        height: _btnSize,
+        width: btnSize,
+        height: btnSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: colorScheme.primary,
@@ -373,7 +386,7 @@ class _PlayerScreenState extends State<PlayerScreen>
         child: Icon(
           player.isPlaying ? Icons.pause : Icons.play_arrow,
           color: colorScheme.onPrimary,
-          size: _btnSize - 10,
+          size: btnSize - 10,
         ),
       ),
     );

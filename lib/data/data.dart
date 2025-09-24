@@ -1,3 +1,4 @@
+import 'package:retune/models/models.dart';
 import 'package:retune/models/song.dart';
 
 List<Song> featuredSongs = [
@@ -26,22 +27,6 @@ List<Song> featuredSongs = [
     createdAt: DateTime.now(),
   ),
   Song(
-    id: "iyZQ9IM5",
-    name: "Jodi Abar",
-    imageUrl:
-        "https://c.saavncdn.com/439/Jodi-Abar-Bengali-2024-20240129081513-150x150.jpg",
-    artists: "Angel Noor",
-    createdAt: DateTime.now(),
-  ),
-  Song(
-    id: "g9eO2TWu",
-    name: "Neelanjana",
-    imageUrl:
-        "https://c.saavncdn.com/756/Neelanjana-Bengali-2023-20230418145911-150x150.jpg",
-    artists: "Encore",
-    createdAt: DateTime.now(),
-  ),
-  Song(
     id: "TPYI7vWa",
     name: "Baarish - Yaariyan",
     imageUrl: "https://c.saavncdn.com/503/Yaariyan-Hindi-2013-150x150.jpg",
@@ -55,5 +40,48 @@ List<Song> featuredSongs = [
         "https://c.saavncdn.com/494/Jism-Hindi-2003-20221214104252-150x150.jpg",
     artists: "Shreya Ghoshal",
     createdAt: DateTime.now(),
+  ),
+];
+
+List<ArtistInfo> featuredArtists = [
+  ArtistInfo(
+    id: "455142",
+    name: "Kumar Sanu",
+    role: "",
+    type: "",
+    image: [
+      ImageModel(
+        quality: "",
+        url: "https://c.saavncdn.com/artists/Kumar_Sanu_150x150.jpg",
+      ),
+    ],
+    url: "",
+  ),
+  ArtistInfo(
+    id: "455130",
+    name: "Shreya Ghoshal",
+    role: "",
+    type: "",
+    image: [
+      ImageModel(
+        quality: "",
+        url: "https://c.saavncdn.com/artists/Shreya_Ghoshal_007_20241101074144_150x150.jpg",
+      ),
+    ],
+    url: "",
+  ),
+  ArtistInfo(
+    id: "456323",
+    name: "Pritam",
+    role: '',
+    type: '',
+    image: [
+      ImageModel(
+        quality: '',
+        url:
+            "https://c.saavncdn.com/artists/Pritam_Chakraborty-20170711073326_150x150.jpg",
+      ),
+    ],
+    url: '',
   ),
 ];
