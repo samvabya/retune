@@ -42,7 +42,7 @@ class _PlayerScreenState extends State<PlayerScreen>
 
         player.isPlaying ? _controller.repeat() : _controller.stop();
         return Container(
-          decoration: BoxDecoration(color: colorScheme.primary),
+          color: colorScheme.primary,
           child: PageView(
             children: [
               SizedBox(
@@ -255,30 +255,47 @@ class _PlayerScreenState extends State<PlayerScreen>
                 ),
               ),
               SafeArea(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 50),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Queue',
-                        style: TextStyle(
-                          color: colorScheme.onPrimary,
-                          fontSize: 20,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 50),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Queue',
+                          style: TextStyle(
+                            color: colorScheme.onPrimary,
+                            fontSize: 20,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) => _buildQueueItem(
                           context,
                           player.queue[index],
-                          colorScheme.onPrimary,
+                          colorScheme,
+                          index == player.currentIndex,
+                          index,
                         ),
                         itemCount: player.queue.length,
                       ),
-                    ),
-                  ],
+                      Divider(),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) => _buildQueueItem(
+                          context,
+                          player.suggestions[index],
+                          colorScheme,
+                          false,
+                          null,
+                        ),
+                        itemCount: player.suggestions.length,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -291,59 +308,76 @@ class _PlayerScreenState extends State<PlayerScreen>
   Widget _buildQueueItem(
     BuildContext context,
     DetailedSongModel song,
-    Color textColor,
+    ColorScheme colorScheme,
+    bool nowPlaying,
+    int? index,
   ) {
-    return ListTile(
-      dense: true,
-      leading: ClipOval(
-        child: CachedNetworkImage(
-          imageUrl: song.imageUrl,
-          // width: 56,
-          // height: 56,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            // width: 56,
-            // height: 56,
-            color: Colors.grey[300],
-            child: const Icon(Icons.music_note),
+    return Dismissible(
+      key: UniqueKey(),
+      // key: index == null ? ValueKey(song.id) : ValueKey('$index'),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) async => index != null,
+      onDismissed: (_) => Provider.of<PlayerProvider>(
+        context,
+        listen: false,
+      ).removeFromQueue(index!),
+      child: Container(
+        color: nowPlaying ? colorScheme.tertiary : null,
+        child: ListTile(
+          dense: true,
+          leading: ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: song.imageUrl,
+              // width: 56,
+              // height: 56,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                // width: 56,
+                // height: 56,
+                color: Colors.grey[300],
+                child: const Icon(Icons.music_note),
+              ),
+              errorWidget: (context, url, error) => Container(
+                // width: 56,
+                // height: 56,
+                color: Colors.grey[300],
+                child: const Icon(Icons.music_note),
+              ),
+            ),
           ),
-          errorWidget: (context, url, error) => Container(
-            // width: 56,
-            // height: 56,
-            color: Colors.grey[300],
-            child: const Icon(Icons.music_note),
-          ),
-        ),
-      ),
-      title: Text(
-        song.name,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontWeight: FontWeight.w500, color: textColor),
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            song.allArtistsText,
+          title: Text(
+            song.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: textColor),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: colorScheme.onPrimary,
+            ),
           ),
-        ],
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                song.allArtistsText,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: colorScheme.onPrimary),
+              ),
+            ],
+          ),
+          trailing: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.drag_handle, color: colorScheme.onPrimary),
+          ),
+          onTap: nowPlaying ? () {} : () => _onSongTap(context, song),
+        ),
       ),
-      trailing: IconButton(
-        onPressed: () {},
-        icon: Icon(Icons.drag_handle, color: textColor),
-      ),
-      onTap: () => _onSongTap(context, song),
     );
   }
 
   void _onSongTap(BuildContext context, DetailedSongModel song) {
     // Play the song using the player provider
     context.read<PlayerProvider>().playSongModel(song);
-    context.read<PlayerProvider>().clearQueue();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

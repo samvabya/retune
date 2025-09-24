@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         edges: [
           EdgeBlur(
             type: EdgeType.topEdge,
-            size: MediaQuery.heightOf(context) * 0.23,
+            size: MediaQuery.heightOf(context) * 0.2,
             sigma: 15,
             controlPoints: [
               ControlPoint(position: 0.9, type: ControlPointType.visible),

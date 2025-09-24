@@ -60,15 +60,10 @@ class SaavnService {
       throw Exception('Song fetch failed: $e');
     }
   }
-  
-  Future<DetailedSongModel?> getSongSuggestionsById(
-    String songId, {
-    bool includeLyrics = false,
-  }) async {
+
+  Future<List<DetailedSongModel>> getSongSuggestionsById(String songId) async {
     try {
-      final url = Uri.parse(
-        '$_baseUrl/songs/$songId/suggestions',
-      );
+      final url = Uri.parse('$_baseUrl/songs/$songId/suggestions');
 
       final response = await http.get(
         url,
@@ -80,8 +75,11 @@ class SaavnService {
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        final songResponse = SongDetailsResponse.fromJson(jsonData);
-        return songResponse.song;
+        if (jsonData['success'] == false) return [];
+        final data = jsonData['data'] as List<dynamic>;
+        return data
+            .map((e) => DetailedSongModel.fromJson(e as Map<String, dynamic>))
+            .toList();
       } else {
         throw Exception('Failed to fetch song: ${response.statusCode}');
       }

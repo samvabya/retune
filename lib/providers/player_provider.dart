@@ -29,6 +29,7 @@ class PlayerProvider with ChangeNotifier {
   bool _shuffleMode = false;
   String _errorMessage = '';
   List<DetailedSongModel> _queue = [];
+  List<DetailedSongModel> _suggestions = [];
   int _currentIndex = 0;
   ColorScheme? _imageColorScheme;
 
@@ -42,6 +43,7 @@ class PlayerProvider with ChangeNotifier {
   bool get shuffleMode => _shuffleMode;
   String get errorMessage => _errorMessage;
   List<DetailedSongModel> get queue => _queue;
+  List<DetailedSongModel> get suggestions => _suggestions;
   int get currentIndex => _currentIndex;
   ColorScheme? get imageColorScheme => _imageColorScheme;
 
@@ -116,6 +118,12 @@ class PlayerProvider with ChangeNotifier {
   Future<void> playSongModel(DetailedSongModel song) async {
     try {
       _currentSong = song;
+      if (queue.contains(song) == false) {
+        addToQueue(song);
+      }
+      _currentIndex = queue.indexOf(song);
+
+      if (suggestions.contains(song) == false) {}
 
       // Get the best quality download URL
       String? audioUrl = _getBestQualityUrl(song.downloadUrl);
@@ -127,9 +135,15 @@ class PlayerProvider with ChangeNotifier {
       await _audioPlayer.play(UrlSource(audioUrl));
       _state = LocalPlayerState.playing;
       notifyListeners();
+
+      // Get image color scheme
       _imageColorScheme = await ColorScheme.fromImageProvider(
         provider: NetworkImage(song.imageUrl),
       );
+      notifyListeners();
+
+      // Get song suggestions
+      await getSuggestions(song.id);
       notifyListeners();
 
       // Save the song to the local database
@@ -307,12 +321,12 @@ class PlayerProvider with ChangeNotifier {
   }
 
   Future<void> addToQueueId(String songId) async {
-      final song = await _songService.getSongById(songId);
-      if (song == null) {
-        throw Exception('Song not found');
-      }
+    final song = await _songService.getSongById(songId);
+    if (song == null) {
+      throw Exception('Song not found');
+    }
 
-      addToQueue(song);
+    addToQueue(song);
   }
 
   void addToQueue(DetailedSongModel song) {
@@ -336,6 +350,16 @@ class PlayerProvider with ChangeNotifier {
     _queue.clear();
     _currentIndex = 0;
     notifyListeners();
+  }
+
+  Future<void> getSuggestions(String id) async {
+    try {
+      _suggestions = await SaavnService()
+          .getSongSuggestionsById(id)
+          .then((suggestions) => suggestions.map((e) => e).toList());
+    } catch (e) {
+      _suggestions = [];
+    }
   }
 
   @override

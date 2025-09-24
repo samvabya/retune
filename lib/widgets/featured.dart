@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/data/data.dart';
 import 'package:retune/models/song.dart';
@@ -20,9 +21,20 @@ class Featured extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.23),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text(
+                    'Featured',
+                    style: GoogleFonts.imperialScript(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: text,
+                    ),
+                  ),
+                ),
                 SizedBox(
-                  height: 180,
+                  height: 190,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
@@ -49,26 +61,72 @@ class Featured extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Recents',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: state.songs.isEmpty
+                      ? Text(
+                          'Popular',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      : DefaultTabController(
+                          length: 2,
+                          child: TabBar(
+                            padding: EdgeInsets.zero,
+                            indicatorPadding: EdgeInsets.zero,
+                            labelPadding: EdgeInsets.only(right: 20),
+                            isScrollable: true,
+                            dividerHeight: 0,
+                            indicator: BoxDecoration(),
+                            tabAlignment: TabAlignment.start,
+                            labelColor: text,
+                            unselectedLabelColor: text.withOpacity(0.5),
+                            splashFactory: NoSplash.splashFactory,
+                            onTap: (value) => state.setTabIndex(value),
+                            tabs: [
+                              Tab(
+                                child: Text(
+                                  'For You',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Tab(
+                                child: Text(
+                                  'Recently Played',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                 ),
-                const SizedBox(height: 10),
-                ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.songs.isEmpty
-                      ? featuredSongs.length
-                      : state.songs.length,
-                  itemBuilder: (context, index) => _buildSongTile(
-                    context,
-                    state.songs.isEmpty
-                        ? featuredSongs[index]
-                        : state.songs[index],
+                if (state.isLoading)
+                  LinearProgressIndicator(
+                    color: text,
+                    backgroundColor: surface,
+                    minHeight: 1,
                   ),
-                ),
+                if (state.songs.isEmpty)
+                  ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: featuredSongs.length,
+                    itemBuilder: (context, index) =>
+                        _buildSongTile(context, featuredSongs[index]),
+                  )
+                else
+                  ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.tabIndex == 0
+                        ? state.suggestions.length
+                        : state.songs.length,
+                    itemBuilder: (context, index) => _buildSongTile(
+                      context,
+                      state.tabIndex == 0
+                          ? state.suggestions[index]
+                          : state.songs[index],
+                    ),
+                  ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.25),
               ],
             ),
@@ -81,7 +139,7 @@ class Featured extends StatelessWidget {
   Widget _buildSongCard(Song song, bool isFirst, BuildContext context) =>
       Container(
         width: isFirst ? 150 : 120,
-        margin: EdgeInsets.only(right: 10, left: isFirst ? 10 : 0),
+        margin: EdgeInsets.only(right: 10, left: isFirst ? 20 : 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
