@@ -29,7 +29,7 @@ class Featured extends StatelessWidget {
                     style: GoogleFonts.imperialScript(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      color: text,
+                      color: text.withOpacity(0.5),
                     ),
                   ),
                 ),
