@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/providers/player_provider.dart';
@@ -11,7 +12,7 @@ import 'package:retune/util.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService.init();
-  
+
   runApp(const MainApp());
 }
 
@@ -30,7 +31,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme(
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
             primary: primary,
             onPrimary: text,
             secondary: secondary,

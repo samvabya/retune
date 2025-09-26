@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/search_provider.dart';
@@ -31,6 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
           backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
         ),
         body: Column(
           children: [
@@ -49,7 +51,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: TextField(
                     controller: _searchController,
                     autofocus: true,
-
                     textAlignVertical: TextAlignVertical.center,
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.surface,
