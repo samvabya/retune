@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/providers/player_provider.dart';
 import 'package:retune/providers/song_provider.dart';
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         actions: [
           IconButton(
             onPressed: () async {
