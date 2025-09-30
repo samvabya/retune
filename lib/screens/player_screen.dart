@@ -33,9 +33,9 @@ class PlayerScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: colorScheme.onSurface,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
+                              color: colorScheme.onPrimaryContainer,
+                              blurRadius: 20,
+                              offset: const Offset(0, 0),
                             ),
                           ],
                         ),
@@ -290,74 +290,64 @@ class PlayerScreen extends StatelessWidget {
     bool nowPlaying,
     int? index,
   ) {
-    return Dismissible(
-      key: UniqueKey(),
-      // key: index == null ? ValueKey(song.id) : ValueKey('$index'),
-      direction: DismissDirection.endToStart,
-      confirmDismiss: (direction) async => index != null,
-      onDismissed: (_) => Provider.of<PlayerProvider>(
-        context,
-        listen: false,
-      ).removeFromQueue(index!),
-      child: Container(
-        color: nowPlaying ? colorScheme.tertiary : null,
-        child: ListTile(
-          dense: true,
-          leading: ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: song.imageUrl,
+    return Container(
+      color: nowPlaying ? colorScheme.tertiary : null,
+      child: ListTile(
+        dense: true,
+        leading: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: song.imageUrl,
+            // width: 56,
+            // height: 56,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(
               // width: 56,
               // height: 56,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                // width: 56,
-                // height: 56,
-                color: Colors.grey[300],
-                child: const Icon(Icons.music_note),
-              ),
-              errorWidget: (context, url, error) => Container(
-                // width: 56,
-                // height: 56,
-                color: Colors.grey[300],
-                child: const Icon(Icons.music_note),
-              ),
+              color: Colors.grey[300],
+              child: const Icon(Icons.music_note),
+            ),
+            errorWidget: (context, url, error) => Container(
+              // width: 56,
+              // height: 56,
+              color: Colors.grey[300],
+              child: const Icon(Icons.music_note),
             ),
           ),
-          title: Text(
-            song.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: colorScheme.onPrimary,
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                song.allArtistsText,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: colorScheme.onPrimary),
-              ),
-            ],
-          ),
-          trailing: IconButton(
-            onPressed: () => _onSongTap(context, song, index == null),
-            icon: Icon(
-              index == null
-                  ? Icons.add
-                  : nowPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow,
-              color: colorScheme.onPrimary,
-            ),
-          ),
-          onTap: nowPlaying
-              ? () {}
-              : () => _onSongTap(context, song, index == null),
         ),
+        title: Text(
+          song.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: colorScheme.onPrimary,
+          ),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              song.allArtistsText,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: colorScheme.onPrimary),
+            ),
+          ],
+        ),
+        trailing: IconButton(
+          onPressed: () => index != null && !nowPlaying
+              ? context.read<PlayerProvider>().removeFromQueue(index)
+              : _onSongTap(context, song, index == null),
+          icon: Icon(
+            index == null
+                ? Icons.add
+                : nowPlaying
+                ? Icons.more_horiz
+                : Icons.close,
+            color: colorScheme.onPrimary,
+          ),
+        ),
+        onTap: () => _onSongTap(context, song, index == null),
       ),
     );
   }

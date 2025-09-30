@@ -16,9 +16,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final Uri url = Uri.parse('https://github.com/samvabya/retune');
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(backgroundColor: Colors.transparent),
+      extendBodyBehindAppBar: true,
       body: Column(
         children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.shortestSide,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [primary, surface],
+                  ),
+                ),
+              ),
+              Image.asset('assets/retune.png', width: 150, color: text),
+            ],
+          ),
+          const SizedBox(height: 20),
           ListTile(
             leading: Stack(
               children: [
