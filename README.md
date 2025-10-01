@@ -17,9 +17,9 @@
 
 ## Features
 
-- Play (almost) any song or video from Jio Saavn
+- Play (almost) any song from Jio Saavn
 - Background playback
-- Search for songs
+- Search for songs and artists
 - Persistent queue and brilliant suggestions
 - New fresh and ambient UI design
 

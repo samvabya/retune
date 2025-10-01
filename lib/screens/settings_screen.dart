@@ -19,17 +19,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(),
       body: Column(
         children: [
-          AspectRatio(
-            aspectRatio: 1.5,
-            child: Center(
-              child: ColorFiltered(
+          Stack(
+            children: [
+              ColorFiltered(
                 colorFilter: const ColorFilter.mode(
                   surface,
                   BlendMode.multiply,
                 ),
-                child: Image.asset('assets/icon_cap.png', height: 200),
+                child: Image.asset('assets/icon_cap.png'),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 20),
           ListTile(

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/data/data.dart';
 import 'package:retune/models/song.dart';
@@ -21,18 +20,7 @@ class Featured extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Featured',
-                    style: GoogleFonts.imperialScript(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: text.withOpacity(0.5),
-                    ),
-                  ),
-                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.23),
                 SizedBox(
                   height: 190,
                   child: ListView(
@@ -97,12 +85,6 @@ class Featured extends StatelessWidget {
                           ),
                         ),
                 ),
-                if (state.isLoading)
-                  LinearProgressIndicator(
-                    color: text,
-                    backgroundColor: surface,
-                    minHeight: 1,
-                  ),
                 if (state.songs.isEmpty)
                   ListView.builder(
                     padding: EdgeInsets.all(0),

@@ -32,7 +32,7 @@ class Song {
   Song.create(DetailedSongModel song) : 
        id = song.id,
        name = song.name,
-       artists = song.allArtistsText,
+       artists = song.primaryArtistsText,
        imageUrl = song.imageUrl,
        createdAt = DateTime.now();
 
