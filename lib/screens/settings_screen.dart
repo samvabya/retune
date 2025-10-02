@@ -17,64 +17,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              ColorFiltered(
-                colorFilter: const ColorFilter.mode(
-                  surface,
-                  BlendMode.multiply,
-                ),
-                child: Image.asset('assets/icon_cap.png'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          ListTile(
-            leading: Stack(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
               children: [
-                Padding(
-                  padding: EdgeInsetsGeometry.only(left: 10),
-                  child: CircleAvatar(),
-                ),
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    'https://avatars.githubusercontent.com/u/127547778',
+                ColorFiltered(
+                  colorFilter: const ColorFilter.mode(
+                    surface,
+                    BlendMode.multiply,
                   ),
+                  child: Image.asset('assets/icon_cap.png'),
                 ),
               ],
             ),
-            title: Text('Creators of retune'),
-          ),
-          ListTile(
-            title: Text('Github Repo'),
-            subtitle: Text(
-              url.toString(),
-              style: Theme.of(context).textTheme.labelSmall,
+            const SizedBox(height: 20),
+            ListTile(
+              leading: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsetsGeometry.only(left: 10),
+                    child: CircleAvatar(),
+                  ),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(
+                      'https://avatars.githubusercontent.com/u/127547778',
+                    ),
+                  ),
+                ],
+              ),
+              title: Text('Creators of retune'),
             ),
-            trailing: Wrap(
-              children: [
-                IconButton.filledTonal(
-                  onPressed: () {
-                    Clipboard.setData(
-                      ClipboardData(text: 'https://github.com/samvabya/retune'),
-                    );
-                  },
-                  icon: Icon(Icons.copy),
-                ),
-                IconButton.filledTonal(
-                  onPressed: () async {
-                    if (!await launchUrl(url)) {
-                      showSnack('Cannot open link', context);
-                    }
-                  },
-                  icon: Icon(Icons.open_in_new),
-                ),
-              ],
+            ListTile(
+              title: Text('Github Repo'),
+              subtitle: Text(
+                url.toString(),
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+              trailing: Wrap(
+                children: [
+                  IconButton.filledTonal(
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(
+                          text: 'https://github.com/samvabya/retune',
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.copy),
+                  ),
+                  IconButton.filledTonal(
+                    onPressed: () async {
+                      if (!await launchUrl(url)) {
+                        showSnack('Cannot open link', context);
+                      }
+                    },
+                    icon: Icon(Icons.open_in_new),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Card.filled(
+              color: Theme.of(context).colorScheme.secondaryFixedDim,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: Text(
+                  'This app is open source. In case you want to contribute or report an issue, you can find the repo here.',
+                  style: Theme.of(context).textTheme.titleSmall,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

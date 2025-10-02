@@ -43,7 +43,7 @@ class SearchResultCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            song.allArtistsText,
+            song.primaryArtistsText,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -68,6 +68,7 @@ class SearchResultCard extends StatelessWidget {
       ),
     );
   }
+
   void _onAddToQueue(BuildContext context, DetailedSongModel song) {
     // Play the song using the player provider
     context.read<PlayerProvider>().addToQueue(song);

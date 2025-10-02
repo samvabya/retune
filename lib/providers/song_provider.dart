@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:retune/data/data.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/services/saavn_service.dart';
 import '../models/song.dart';
@@ -13,8 +14,8 @@ class SongProvider with ChangeNotifier {
   List<Song> _randomPicks = [];
   List<Song> _suggestions = [];
   int _tabIndex = 0;
-  List<ArtistInfo> _artists = [];
-  int? _artistIndex;
+  List<ArtistInfo> _artists = featuredArtists;
+  ArtistInfo? _selectedArtist;
   List<DetailedSongModel> _songsByArtist = [];
 
   List<Song> get songs => _songs;
@@ -23,7 +24,7 @@ class SongProvider with ChangeNotifier {
   List<Song> get suggestions => _suggestions;
   int get tabIndex => _tabIndex;
   List<ArtistInfo> get artists => _artists;
-  int? get artistIndex => _artistIndex;
+  ArtistInfo? get selectedArtist => _selectedArtist;
   List<DetailedSongModel> get songsByArtist => _songsByArtist;
 
   SongProvider() {
@@ -47,11 +48,13 @@ class SongProvider with ChangeNotifier {
       if (_songs.isNotEmpty) {
         await getSuggestions(_songs[0].id);
         await getArtists();
+      } else {
+        _artists = featuredArtists;
       }
       notifyListeners();
 
       if (_artists.isNotEmpty) {
-        _artistIndex = 0;
+        _selectedArtist = _artists[0];
         await getSongsByArtist(_artists[0].id);
       }
 
@@ -78,7 +81,7 @@ class SongProvider with ChangeNotifier {
 
   Future<void> getArtists() async {
     try {
-      _artistIndex = null;
+      _selectedArtist = null;
       _artists = await Future.wait(
         _songs[0].artists.split(', ').map((e) async {
           return await SaavnService().getArtists(e);
@@ -120,10 +123,10 @@ class SongProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setArtistIndex(int index) async {
-    _artistIndex = index;
+  Future<void> setArtistIndex(ArtistInfo artist) async {
+    _selectedArtist = artist;
     notifyListeners();
-    await getSongsByArtist(_artists[index].id);
+    await getSongsByArtist(artist.id);
     notifyListeners();
   }
 }

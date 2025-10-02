@@ -327,7 +327,7 @@ class PlayerScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              song.allArtistsText,
+              song.primaryArtistsText,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: colorScheme.onPrimary),

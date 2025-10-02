@@ -27,10 +27,13 @@ class Artists extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: state.artists.length,
                     itemBuilder: (context, index) => GestureDetector(
-                      onTap: () async => await state.setArtistIndex(index),
+                      onTap: () async =>
+                          await state.setArtistIndex(state.artists[index]),
                       child: _buildArtistCard(
                         state.artists[index],
-                        index == state.artistIndex,
+                        state.selectedArtist != null &&
+                            index ==
+                                state.artists.indexOf(state.selectedArtist!),
                         context,
                       ),
                     ),
@@ -39,7 +42,9 @@ class Artists extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 20, top: 20),
                   child: Text(
-                    'Handpicks',
+                    state.songsByArtist.isEmpty
+                        ? 'Tap an artist to get started'
+                        : 'Songs by ${state.selectedArtist!.name}',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

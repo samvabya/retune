@@ -8,10 +8,11 @@
 
 <p align="center">
   <img src="./screenshots/Screenshot_2025-09-26-17-15-22-78_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
-  <img src="./screenshots/Screenshot_2025-09-26-17-21-28-66_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
+  <img src="./screenshots/Screenshot_2025-10-02-16-42-57-12_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
+  <img src="./screenshots/Screenshot_2025-09-26-17-16-00-61_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
 </p>
 <p align="center">
-  <img src="./screenshots/Screenshot_2025-09-26-17-16-00-61_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
+  <img src="./screenshots/Screenshot_2025-09-26-17-21-28-66_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
   <img src="./screenshots/Screenshot_2025-09-26-17-17-21-87_21c41934a74e1eaf4e4503ada074b346.jpg" width="30%" />
 </p>
 
@@ -19,7 +20,8 @@
 
 - Play (almost) any song from Jio Saavn
 - Background playback
-- Search for songs and artists
+- Search for songs 
+- Checkout your favorite artists
 - Persistent queue and brilliant suggestions
 - New fresh and ambient UI design
 
