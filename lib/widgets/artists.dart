@@ -69,7 +69,9 @@ class Artists extends StatelessWidget {
     ArtistInfo artist,
     bool isSelected,
     BuildContext context,
-  ) => Container(
+  ) => AnimatedContainer(
+    duration: Duration(milliseconds: 200),
+    curve: Curves.easeInCirc,
     width: isSelected ? 150 : 120,
     margin: EdgeInsets.only(left: 10),
     child: Column(

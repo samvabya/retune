@@ -139,6 +139,7 @@ class PlayerProvider with ChangeNotifier {
       // Get image color scheme
       _imageColorScheme = await ColorScheme.fromImageProvider(
         provider: NetworkImage(song.imageUrl),
+        dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
       );
       notifyListeners();
 

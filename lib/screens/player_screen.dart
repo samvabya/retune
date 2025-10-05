@@ -337,7 +337,7 @@ class PlayerScreen extends StatelessWidget {
         trailing: IconButton(
           onPressed: () => index != null && !nowPlaying
               ? context.read<PlayerProvider>().removeFromQueue(index)
-              : _onSongTap(context, song, index == null),
+              : context.read<PlayerProvider>().addToQueue(song),
           icon: Icon(
             index == null
                 ? Icons.add
@@ -347,21 +347,9 @@ class PlayerScreen extends StatelessWidget {
             color: colorScheme.onPrimary,
           ),
         ),
-        onTap: () => _onSongTap(context, song, index == null),
+        onTap: () => context.read<PlayerProvider>().playSongModel(song),
       ),
     );
-  }
-
-  void _onSongTap(
-    BuildContext context,
-    DetailedSongModel song,
-    bool addToQueue,
-  ) {
-    if (addToQueue) {
-      context.read<PlayerProvider>().addToQueue(song);
-    } else {
-      context.read<PlayerProvider>().playSongModel(song);
-    }
   }
 
   Widget _buildPlayPauseButton(
