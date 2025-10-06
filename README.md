@@ -2,7 +2,7 @@
     <img src="./android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="128" style="display: block; margin: 0 auto"/>
     <h1>retune</h1>
     <p>Free and open source music player.</p>
-    <a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/samvabya/b09b448bb34106f9c2e347884d5b268d/raw/clone.json&logo=github'></a>
+    <a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=red&label=Clone&query=count&url=https://gist.githubusercontent.com/samvabya/b09b448bb34106f9c2e347884d5b268d/raw/clone.json&logo=github'></a>
     <!-- <img alt="ViewCount" src="https://views.whatilearened.today/views/github/samvabya/retune.svg"> -->
 </div>
 
