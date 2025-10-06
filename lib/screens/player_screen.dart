@@ -245,7 +245,7 @@ class PlayerScreen extends StatelessWidget {
                                       ], player.currentIndex);
                                     },
                                     child: Text(
-                                      'Add to Queue',
+                                      'Add All',
                                       style: TextStyle(
                                         color: colorScheme.onPrimary,
                                         fontWeight: FontWeight.bold,
@@ -274,7 +274,7 @@ class PlayerScreen extends StatelessWidget {
                     ),
                   );
                 },
-                icon: Icon(Icons.arrow_upward, color: colorScheme.onPrimary),
+                icon: Icon(Icons.queue_music, color: colorScheme.onPrimary),
               ),
             ),
           ],

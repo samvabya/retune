@@ -71,8 +71,8 @@ class Artists extends StatelessWidget {
     BuildContext context,
   ) => AnimatedContainer(
     duration: Duration(milliseconds: 200),
-    curve: Curves.easeInCirc,
-    width: isSelected ? 150 : 120,
+    curve: Curves.easeInOutCirc,
+    width: isSelected ? 170 : 100,
     margin: EdgeInsets.only(left: 10),
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -81,8 +81,7 @@ class Artists extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: CachedNetworkImage(
-            height: isSelected ? 170 : 150,
-            width: 150,
+            height: 170,
             imageUrl: artist.imageUrl,
             fit: BoxFit.cover,
           ),

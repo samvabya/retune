@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:retune/models/models.dart';
-import 'package:retune/providers/search_provider.dart';
+import 'package:retune/services/saavn_service.dart';
 import 'package:retune/widgets/search_result_card.dart';
 import 'package:retune/widgets/search_section.dart';
+
+enum SearchState { idle, loading, success, error }
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -15,6 +16,47 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final SaavnService _searchService = SaavnService();
+
+  SearchResponse? _searchResponse;
+  SearchState _state = SearchState.idle;
+  String _errorMessage = '';
+  String _currentQuery = '';
+
+  Future<void> search(String query) async {
+    if (query.trim().isEmpty) {
+      _clearResults();
+      return;
+    }
+
+    _currentQuery = query;
+    _state = SearchState.loading;
+    _errorMessage = '';
+    setState(() {});
+
+    try {
+      _searchResponse = await _searchService.search(query);
+      _state = SearchState.success;
+    } catch (e) {
+      _state = SearchState.error;
+      _errorMessage = e.toString();
+      _searchResponse = null;
+    }
+
+    setState(() {});
+  }
+
+  void _clearResults() {
+    _searchResponse = null;
+    _state = SearchState.idle;
+    _errorMessage = '';
+    _currentQuery = '';
+    setState(() {});
+  }
+
+  void clearSearch() {
+    _clearResults();
+  }
 
   @override
   void dispose() {
@@ -26,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        Provider.of<SearchProvider>(context, listen: false).clearSearch();
+        clearSearch();
       },
       child: Scaffold(
         appBar: AppBar(
@@ -72,7 +114,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 ),
                                 onPressed: () {
                                   _searchController.clear();
-                                  context.read<SearchProvider>().clearSearch();
+                                  clearSearch();
                                 },
                               ),
                             )
@@ -81,9 +123,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     onChanged: (query) {
                       setState(() {});
                       if (query.trim().isEmpty) {
-                        context.read<SearchProvider>().clearSearch();
+                        clearSearch();
                       } else {
-                        context.read<SearchProvider>().search(query.trim());
+                        search(query.trim());
                       }
                     },
                   ),
@@ -92,9 +134,9 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             SizedBox(height: 10),
             Expanded(
-              child: Consumer<SearchProvider>(
-                builder: (context, provider, child) {
-                  switch (provider.state) {
+              child: Builder(
+                builder: (context) {
+                  switch (_state) {
                     case SearchState.idle:
                       return const Center(
                         child: Column(
@@ -118,14 +160,14 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'Error: ${provider.errorMessage}',
+                              'Error: $_errorMessage',
                               style: const TextStyle(color: Colors.red),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton(
                               onPressed: () {
-                                provider.search(provider.currentQuery);
+                                search(_currentQuery);
                               },
                               child: const Text('Retry'),
                             ),
@@ -134,7 +176,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       );
 
                     case SearchState.success:
-                      final response = provider.searchResponse!;
+                      final response = _searchResponse!;
                       return ListView(
                         children: [
                           // Songs
