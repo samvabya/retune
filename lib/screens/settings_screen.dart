@@ -35,8 +35,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Uri url = Uri.parse('https://github.com/samvabya/retune');
-
     return Scaffold(
       appBar: AppBar(),
       body: Consumer<SettingsProvider>(
@@ -165,11 +163,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   title: Text('Creators of retune'),
+                  trailing: IconButton(
+                    onPressed: () => showSnack(
+                      'We are not accepting sponsors at the moment! Thank you for your interest😃',
+                      context,
+                    ),
+                    tooltip: 'Sponsor this app',
+                    icon: Icon(Icons.money),
+                  ),
                 ),
                 ListTile(
                   title: Text('Github Repo'),
                   subtitle: Text(
-                    url.toString(),
+                    'https://github.com/samvabya/retune',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                   trailing: Wrap(
@@ -186,7 +192,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       IconButton.filledTonal(
                         onPressed: () async {
-                          if (!await launchUrl(url)) {
+                          if (!await launchUrl(
+                            Uri.parse('https://github.com/samvabya/retune'),
+                          )) {
                             showSnack('Cannot open link', context);
                           }
                         },
@@ -234,7 +242,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             final data = json.decode(value.body);
                             final latestVersion = data['tag_name'];
                             if (latestVersion != version) {
-                              showSnack('New version available', context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('A new version is available'),
+                                  duration: Duration(seconds: 5),
+                                  action: SnackBarAction(
+                                    label: 'Update',
+                                    backgroundColor: surface,
+                                    onPressed: () async {
+                                      await launchUrl(
+                                        Uri.parse(
+                                          'https://github.com/samvabya/retune/releases/latest',
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
                             } else {
                               showSnack(
                                 'You are on the latest version',

@@ -7,8 +7,8 @@ import 'package:retune/providers/song_provider.dart';
 import 'package:retune/screens/search_screen.dart';
 import 'package:retune/screens/settings_screen.dart';
 import 'package:retune/util.dart';
-import 'package:retune/widgets/artists.dart';
-import 'package:retune/widgets/featured.dart';
+import 'package:retune/components/artists.dart';
+import 'package:retune/components/featured.dart';
 import 'package:retune/widgets/player_controls.dart';
 import 'package:soft_edge_blur/soft_edge_blur.dart';
 
