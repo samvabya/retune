@@ -120,7 +120,7 @@ class Featured extends StatelessWidget {
 
   Widget _buildSongCard(Song song, bool isFirst, BuildContext context) =>
       Container(
-        width: isFirst ? 150 : 120,
+        width: isFirst ? 170 : 120,
         margin: EdgeInsets.only(right: 10, left: isFirst ? 20 : 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -158,8 +158,8 @@ class Featured extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: CachedNetworkImage(
-                  height: 150,
-                  width: 150,
+                  height: 170,
+                  width: 170,
                   imageUrl: song.imageUrl,
                   fit: BoxFit.cover,
                 ),

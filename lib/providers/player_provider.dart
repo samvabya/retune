@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:retune/models/models.dart';
+import 'package:retune/providers/settings_provider.dart';
 import 'package:retune/providers/song_provider.dart';
 import 'package:retune/services/saavn_service.dart';
 
@@ -19,6 +20,7 @@ enum RepeatMode { none, one, all }
 class PlayerProvider with ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final SaavnService _songService = SaavnService();
+  final SettingsProvider _settingsProvider = SettingsProvider();
 
   DetailedSongModel? _currentSong;
   LocalPlayerState _state = LocalPlayerState.stopped;
@@ -139,6 +141,9 @@ class PlayerProvider with ChangeNotifier {
       // Get image color scheme
       _imageColorScheme = await ColorScheme.fromImageProvider(
         provider: NetworkImage(song.imageUrl),
+        dynamicSchemeVariant: _settingsProvider.vibrancy
+            ? DynamicSchemeVariant.vibrant
+            : DynamicSchemeVariant.tonalSpot,
       );
       notifyListeners();
 

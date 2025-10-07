@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:retune/providers/player_provider.dart';
-import 'package:retune/providers/search_provider.dart';
+import 'package:retune/providers/settings_provider.dart';
 import 'package:retune/providers/song_provider.dart';
 import 'package:retune/screens/home_screen.dart';
 import 'package:retune/services/hive_service.dart';
@@ -26,7 +26,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SearchProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (context) => PlayerProvider()),
         ChangeNotifierProvider(create: (context) => SongProvider()),
       ],
