@@ -2,7 +2,10 @@
     <img src="./android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="128" style="display: block; margin: 0 auto"/>
     <h1>retune</h1>
     <p>Free and open source music player.</p>
-    <a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=red&label=Clone&query=count&url=https://gist.githubusercontent.com/samvabya/b09b448bb34106f9c2e347884d5b268d/raw/clone.json&logo=github'></a> <img alt="GitHub License" src="https://img.shields.io/github/license/samvabya/retune?style=for-the-badge&color=yellow"> <img alt="GitHub Release" src="https://img.shields.io/github/v/release/samvabya/retune?style=for-the-badge&color=green">
+    <!-- <img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=red&label=Clone&query=count&url=https://gist.githubusercontent.com/samvabya/b09b448bb34106f9c2e347884d5b268d/raw/clone.json&logo=github'> -->
+    <img alt="GitHub License" src="https://img.shields.io/github/license/samvabya/retune?style=for-the-badge&color=white">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/samvabya/retune?style=for-the-badge&color=yellow">
+    <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/samvabya/retune/total?style=for-the-badge&color=red">
     <!-- <img alt="ViewCount" src="https://views.whatilearened.today/views/github/samvabya/retune.svg"> -->
 </div>
 
