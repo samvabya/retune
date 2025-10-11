@@ -6,13 +6,12 @@ import 'package:retune/providers/player_provider.dart';
 
 class Queue extends ConsumerWidget {
   final PlayerProvider player;
-  const Queue({super.key, required this.player});
+  final ColorScheme colorScheme;
+  const Queue({super.key, required this.player, required this.colorScheme});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final player = ref.watch(playerProvider);
-    ColorScheme colorScheme =
-        player.imageColorScheme ?? Theme.of(context).colorScheme;
 
     return Container(
       color: colorScheme.primary,
@@ -143,10 +142,8 @@ class Queue extends ConsumerWidget {
             color: colorScheme.onPrimary,
           ),
         ),
-        onTap: () {
-          ref.read(playerProvider.notifier).playSongModel(song);
-          Navigator.pop(context);
-        },
+        onTap: () async =>
+            await ref.read(playerProvider.notifier).playSongModel(song),
       ),
     );
   }

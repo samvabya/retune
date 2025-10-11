@@ -16,9 +16,11 @@ enum LocalPlayerState {
   completed,
 }
 
-enum RepeatMode { none, one, all }
+enum RepeatMode { none, one }
 
-final playerProvider = ChangeNotifierProvider<PlayerProvider>((ref) => PlayerProvider());
+final playerProvider = ChangeNotifierProvider<PlayerProvider>(
+  (ref) => PlayerProvider(),
+);
 
 class PlayerProvider with ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -55,7 +57,9 @@ class PlayerProvider with ChangeNotifier {
   bool get isPlaying => _state == LocalPlayerState.playing;
   bool get isPaused => _state == LocalPlayerState.paused;
   bool get isLoading => _state == LocalPlayerState.loading;
-  bool get hasNext => _currentIndex < _queue.length - 1;
+  bool get hasNextQueue => _currentIndex < _queue.length - 1;
+  bool get hasAutoPlay => _settingsProvider.autoPlay && suggestions.isNotEmpty;
+  bool get hasNext => hasNextQueue || hasAutoPlay;
   bool get hasPrevious => _currentIndex > 0;
 
   double get progress {
@@ -260,9 +264,6 @@ class PlayerProvider with ChangeNotifier {
         _repeatMode = RepeatMode.one;
         break;
       case RepeatMode.one:
-        _repeatMode = RepeatMode.all;
-        break;
-      case RepeatMode.all:
         _repeatMode = RepeatMode.none;
         break;
     }
@@ -275,26 +276,27 @@ class PlayerProvider with ChangeNotifier {
   }
 
   Future<void> next() async {
-    if (!hasNext && _repeatMode != RepeatMode.all) return;
+    if (hasNextQueue) {
+      int nextIndex = _currentIndex + 1;
+      if (nextIndex >= _queue.length) {
+        nextIndex = 0;
+      }
 
-    int nextIndex = _currentIndex + 1;
-    if (nextIndex >= _queue.length && _repeatMode == RepeatMode.all) {
-      nextIndex = 0;
-    }
-
-    if (nextIndex < _queue.length) {
-      _currentIndex = nextIndex;
-      await playSongModel(_queue[_currentIndex]);
+      if (nextIndex < _queue.length) {
+        _currentIndex = nextIndex;
+        await playSongModel(_queue[_currentIndex]);
+      }
+    } else if (hasAutoPlay) {
+      _currentIndex++;
+      _suggestions.shuffle();
+      await playSongModel(_suggestions.first);
     }
   }
 
   Future<void> previous() async {
-    if (!hasPrevious && _repeatMode != RepeatMode.all) return;
+    if (!hasPrevious) return;
 
     int prevIndex = _currentIndex - 1;
-    if (prevIndex < 0 && _repeatMode == RepeatMode.all) {
-      prevIndex = _queue.length - 1;
-    }
 
     if (prevIndex >= 0) {
       _currentIndex = prevIndex;
@@ -309,9 +311,8 @@ class PlayerProvider with ChangeNotifier {
         _audioPlayer.seek(Duration.zero);
         playSong(_currentSong!.id);
         break;
-      case RepeatMode.all:
       case RepeatMode.none:
-        if (hasNext || _repeatMode == RepeatMode.all) {
+        if (hasNext) {
           next();
         } else {
           _state = LocalPlayerState.stopped;

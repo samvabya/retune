@@ -55,21 +55,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Column(
                     children: [
-                      Badge(
-                        label: Text(
-                          'NEW',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: surface,
-                          ),
-                        ),
-                        backgroundColor: Colors.red,
-                        offset: Offset(20, 0),
-                        child: Text(
-                          'Vibrancy',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
+                      Text(
+                        'Vibrancy',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 20),
                       Row(
@@ -148,7 +136,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SwitchListTile(
+                  value: state.autoPlay,
+                  onChanged: (value) async => await state.setAutoPlay(value),
+                  title: Badge(
+                    label: Text(
+                      'NEW',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: surface,
+                      ),
+                    ),
+                    backgroundColor: Colors.red,
+                    offset: Offset(-115, 0),
+                    child: Text('Auto Play'),
+                  ),
+                  subtitle: Text(
+                    'Play similar songs automatically',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  secondary: Icon(Icons.skip_next_rounded),
+                ),
                 ListTile(
                   leading: Stack(
                     children: [

@@ -7,15 +7,18 @@ final settingsProvider = ChangeNotifierProvider<SettingsProvider>((ref) => Setti
 class SettingsProvider extends ChangeNotifier {
   static const String _boxName = 'settings';
   static const String _vibrancyKey = 'vibrancy';
+  static const String _autoPlayKey = 'autoPlay';
 
   Box? _settingsBox;
   bool _vibrancy = true;
+  bool _autoPlay = true;
 
   static final SettingsProvider _instance = SettingsProvider._internal();
   factory SettingsProvider() => _instance;
   SettingsProvider._internal();
 
   bool get vibrancy => _vibrancy;
+  bool get autoPlay => _autoPlay;
 
   Future<void> init() async {
     try {
@@ -24,6 +27,7 @@ class SettingsProvider extends ChangeNotifier {
       _settingsBox = await Hive.openBox(_boxName);
 
       _loadVibrancy();
+      _loadAutoPlay();
 
       debugPrint('SettingsService initialized successfully');
     } catch (e) {
@@ -56,6 +60,31 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> toggleVibrancy() async {
     await setVibrancy(!_vibrancy);
+  }
+
+  void _loadAutoPlay() {
+    try {
+      _autoPlay = _settingsBox?.get(_autoPlayKey, defaultValue: true) ?? true;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading auto play setting: $e');
+      _autoPlay = true;
+    }
+  }
+
+  Future<void> setAutoPlay(bool value) async {
+    try {
+      _autoPlay = value;
+      await _settingsBox?.put(_autoPlayKey, value);
+      notifyListeners();
+      debugPrint('Auto play set to: $value');
+    } catch (e) {
+      debugPrint('Error saving auto play setting: $e');
+    }
+  }
+
+  Future<void> toggleAutoPlay() async {
+    await setAutoPlay(!_autoPlay);
   }
 
   @override
