@@ -202,10 +202,7 @@ class PlayerScreen extends StatelessWidget {
                     showDragHandle: true,
                     isScrollControlled: false,
                     scrollControlDisabledMaxHeightRatio: 0.8,
-                    builder: (context) => Consumer<PlayerProvider>(
-                      builder: (context, player, _) =>
-                          Queue(colorScheme: colorScheme, player: player),
-                    ),
+                    builder: (context) => Queue(player: player),
                   );
                 },
                 icon: Icon(Icons.queue_music, color: colorScheme.onPrimary),

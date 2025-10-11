@@ -5,71 +5,80 @@ import 'package:retune/models/models.dart';
 import 'package:retune/providers/player_provider.dart';
 
 class Queue extends StatelessWidget {
-  final ColorScheme colorScheme;
   final PlayerProvider player;
-  const Queue({super.key, required this.colorScheme, required this.player});
+  const Queue({super.key, required this.player});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: colorScheme.primary,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Queue',
-                style: TextStyle(color: colorScheme.onPrimary, fontSize: 20),
-              ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => _buildQueueItem(
-                context,
-                player.queue[index],
-                colorScheme,
-                index == player.currentIndex,
-                index,
-              ),
-              itemCount: player.queue.length,
-            ),
-            Row(
+    return Consumer<PlayerProvider>(
+      builder: (context, player, child) {
+        ColorScheme colorScheme =
+            player.imageColorScheme ?? Theme.of(context).colorScheme;
+
+        return Container(
+          color: colorScheme.primary,
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                Expanded(child: Divider(color: colorScheme.onPrimary)),
-                TextButton(
-                  onPressed: () {
-                    player.setQueue([
-                      ...player.queue,
-                      ...player.suggestions,
-                    ], player.currentIndex);
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Add All',
+                    'Queue',
                     style: TextStyle(
                       color: colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
                   ),
                 ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => _buildQueueItem(
+                    context,
+                    player.queue[index],
+                    colorScheme,
+                    index == player.currentIndex,
+                    index,
+                  ),
+                  itemCount: player.queue.length,
+                ),
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: colorScheme.onPrimary)),
+                    TextButton(
+                      onPressed: () {
+                        player.setQueue([
+                          ...player.queue,
+                          ...player.suggestions,
+                        ], player.currentIndex);
+                      },
+                      child: Text(
+                        'Add All',
+                        style: TextStyle(
+                          color: colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) => _buildQueueItem(
+                    context,
+                    player.suggestions[index],
+                    colorScheme,
+                    false,
+                    null,
+                  ),
+                  itemCount: player.suggestions.length,
+                ),
               ],
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => _buildQueueItem(
-                context,
-                player.suggestions[index],
-                colorScheme,
-                false,
-                null,
-              ),
-              itemCount: player.suggestions.length,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

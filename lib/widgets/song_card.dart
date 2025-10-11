@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/player_provider.dart';
 
-class SearchResultCard extends StatelessWidget {
+class SongCard extends StatelessWidget {
   final DetailedSongModel song;
 
-  const SearchResultCard({Key? key, required this.song}) : super(key: key);
+  const SongCard({super.key, required this.song});
 
   @override
   Widget build(BuildContext context) {

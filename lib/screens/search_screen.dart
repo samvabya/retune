@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/services/saavn_service.dart';
-import 'package:retune/widgets/search_result_card.dart';
+import 'package:retune/widgets/song_card.dart';
 import 'package:retune/widgets/search_section.dart';
 
 enum SearchState { idle, loading, success, error }
@@ -191,7 +191,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             children: response.songs.results.take(5).map((
                               song,
                             ) {
-                              return SearchResultCard(song: song);
+                              return SongCard(song: song);
                             }).toList(),
                           ),
                           const SizedBox(height: 16),
@@ -234,7 +234,7 @@ class _AllResultsScreen<T> extends StatelessWidget {
           final item = results[index];
 
           if (item is DetailedSongModel) {
-            return SearchResultCard(song: item);
+            return SongCard(song: item);
           }
 
           return const SizedBox.shrink();

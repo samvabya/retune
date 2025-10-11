@@ -46,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         actions: [
           IconButton(
             onPressed: () async {
-              showSnack('Refreshing feed', context);
               await Provider.of<SongProvider>(
                 context,
                 listen: false,
