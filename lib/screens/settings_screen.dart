@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
 import 'package:retune/providers/settings_provider.dart';
 import 'package:retune/util.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,8 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Consumer<SettingsProvider>(
-        builder: (context, state, child) {
+      body: Consumer(
+        builder: (context, ref, child) {
+          final state = ref.watch(settingsProvider);
           return SingleChildScrollView(
             child: Column(
               children: [

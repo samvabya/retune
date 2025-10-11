@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+final settingsProvider = ChangeNotifierProvider<SettingsProvider>((ref) => SettingsProvider());
 
 class SettingsProvider extends ChangeNotifier {
   static const String _boxName = 'settings';

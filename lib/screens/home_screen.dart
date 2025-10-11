@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/providers/player_provider.dart';
 import 'package:retune/providers/song_provider.dart';
 import 'package:retune/screens/search_screen.dart';
@@ -12,14 +12,14 @@ import 'package:retune/components/featured.dart';
 import 'package:retune/widgets/player_controls.dart';
 import 'package:soft_edge_blur/soft_edge_blur.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStateMixin {
   late TabController tabController;
   Color currentTabColor = surface;
 
@@ -45,12 +45,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         actions: [
           IconButton(
-            onPressed: () async {
-              await Provider.of<SongProvider>(
-                context,
-                listen: false,
-              ).loadSongs();
-            },
+            onPressed: () async => await ref.read(songProvider.notifier).loadSongs(),
             icon: Icon(Icons.refresh),
           ),
           IconButton(
@@ -116,8 +111,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           children: const [Featured(), Artists()],
         ),
       ),
-      bottomSheet: Consumer<PlayerProvider>(
-        builder: (context, player, child) {
+      bottomSheet: Consumer(
+        builder: (context, ref, child) {
+          final player = ref.watch(playerProvider);
           if (player.currentSong == null) return const SizedBox.shrink();
           return const PlayerControls();
         },

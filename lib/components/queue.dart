@@ -1,89 +1,86 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/player_provider.dart';
 
-class Queue extends StatelessWidget {
+class Queue extends ConsumerWidget {
   final PlayerProvider player;
   const Queue({super.key, required this.player});
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<PlayerProvider>(
-      builder: (context, player, child) {
-        ColorScheme colorScheme =
-            player.imageColorScheme ?? Theme.of(context).colorScheme;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final player = ref.watch(playerProvider);
+    ColorScheme colorScheme =
+        player.imageColorScheme ?? Theme.of(context).colorScheme;
 
-        return Container(
-          color: colorScheme.primary,
-          child: SingleChildScrollView(
-            child: Column(
+    return Container(
+      color: colorScheme.primary,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Queue',
+                style: TextStyle(color: colorScheme.onPrimary, fontSize: 20),
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) => _buildQueueItem(
+                context,
+                ref,
+                player.queue[index],
+                colorScheme,
+                index == player.currentIndex,
+                index,
+              ),
+              itemCount: player.queue.length,
+            ),
+            Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Expanded(child: Divider(color: colorScheme.onPrimary)),
+                TextButton(
+                  onPressed: () {
+                    player.setQueue([
+                      ...player.queue,
+                      ...player.suggestions,
+                    ], player.currentIndex);
+                  },
                   child: Text(
-                    'Queue',
+                    'Add All',
                     style: TextStyle(
                       color: colorScheme.onPrimary,
-                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => _buildQueueItem(
-                    context,
-                    player.queue[index],
-                    colorScheme,
-                    index == player.currentIndex,
-                    index,
-                  ),
-                  itemCount: player.queue.length,
-                ),
-                Row(
-                  children: [
-                    Expanded(child: Divider(color: colorScheme.onPrimary)),
-                    TextButton(
-                      onPressed: () {
-                        player.setQueue([
-                          ...player.queue,
-                          ...player.suggestions,
-                        ], player.currentIndex);
-                      },
-                      child: Text(
-                        'Add All',
-                        style: TextStyle(
-                          color: colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => _buildQueueItem(
-                    context,
-                    player.suggestions[index],
-                    colorScheme,
-                    false,
-                    null,
-                  ),
-                  itemCount: player.suggestions.length,
                 ),
               ],
             ),
-          ),
-        );
-      },
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) => _buildQueueItem(
+                context,
+                ref,
+                player.suggestions[index],
+                colorScheme,
+                false,
+                null,
+              ),
+              itemCount: player.suggestions.length,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildQueueItem(
     BuildContext context,
+    WidgetRef ref,
     DetailedSongModel song,
     ColorScheme colorScheme,
     bool nowPlaying,
@@ -135,8 +132,8 @@ class Queue extends StatelessWidget {
         ),
         trailing: IconButton(
           onPressed: () => index != null && !nowPlaying
-              ? context.read<PlayerProvider>().removeFromQueue(index)
-              : context.read<PlayerProvider>().addToQueue(song),
+              ? ref.read(playerProvider.notifier).removeFromQueue(index)
+              : ref.read(playerProvider.notifier).addToQueue(song),
           icon: Icon(
             index == null
                 ? Icons.add
@@ -146,7 +143,10 @@ class Queue extends StatelessWidget {
             color: colorScheme.onPrimary,
           ),
         ),
-        onTap: () => context.read<PlayerProvider>().playSongModel(song),
+        onTap: () {
+          ref.read(playerProvider.notifier).playSongModel(song);
+          Navigator.pop(context);
+        },
       ),
     );
   }

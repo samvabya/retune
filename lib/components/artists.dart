@@ -1,21 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/song_provider.dart';
 import 'package:retune/util.dart';
 import 'package:retune/widgets/song_card.dart';
 
-class Artists extends StatelessWidget {
+class Artists extends ConsumerWidget {
   const Artists({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(songProvider);
+    
     return Scaffold(
       backgroundColor: secondary,
-      body: Consumer<SongProvider>(
-        builder: (context, state, child) {
-          return SingleChildScrollView(
+      body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,9 +59,7 @@ class Artists extends StatelessWidget {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.25),
               ],
             ),
-          );
-        },
-      ),
+          ),
     );
   }
 

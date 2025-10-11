@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/settings_provider.dart';
 import 'package:retune/providers/song_provider.dart';
@@ -16,6 +17,8 @@ enum LocalPlayerState {
 }
 
 enum RepeatMode { none, one, all }
+
+final playerProvider = ChangeNotifierProvider<PlayerProvider>((ref) => PlayerProvider());
 
 class PlayerProvider with ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();

@@ -1,124 +1,124 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/data/data.dart';
 import 'package:retune/models/song.dart';
 import 'package:retune/providers/player_provider.dart';
 import 'package:retune/providers/song_provider.dart';
 import 'package:retune/util.dart';
 
-class Featured extends StatelessWidget {
+class Featured extends ConsumerWidget {
   const Featured({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(songProvider);
     return Scaffold(
       backgroundColor: surface,
-      body: Consumer<SongProvider>(
-        builder: (context, state, child) {
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.23),
-                SizedBox(
-                  height: 190,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      if (state.songs.isEmpty)
-                        ...featuredSongs
-                            .take(3)
-                            .map(
-                              (song) => _buildSongCard(
-                                song,
-                                featuredSongs.indexOf(song) == 0,
-                                context,
-                              ),
-                            )
-                      else
-                        ...state.randomPicks.map(
-                          (item) => _buildSongCard(
-                            item,
-                            state.randomPicks.indexOf(item) == 0,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.23),
+            SizedBox(
+              height: 190,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  if (state.songs.isEmpty)
+                    ...featuredSongs
+                        .take(3)
+                        .map(
+                          (song) => _buildSongCard(
+                            song,
+                            featuredSongs.indexOf(song) == 0,
                             context,
+                            ref,
                           ),
-                        ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: state.songs.isEmpty
-                      ? Text(
-                          'Popular',
-                          style: TextStyle(fontWeight: FontWeight.bold),
                         )
-                      : DefaultTabController(
-                          length: 2,
-                          child: TabBar(
-                            padding: EdgeInsets.zero,
-                            indicatorPadding: EdgeInsets.zero,
-                            labelPadding: EdgeInsets.only(right: 20),
-                            isScrollable: true,
-                            dividerHeight: 0,
-                            indicator: BoxDecoration(),
-                            tabAlignment: TabAlignment.start,
-                            labelColor: text,
-                            unselectedLabelColor: text.withOpacity(0.5),
-                            splashFactory: NoSplash.splashFactory,
-                            onTap: (value) => state.setTabIndex(value),
-                            tabs: [
-                              Tab(
-                                child: Text(
-                                  'For You',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Tab(
-                                child: Text(
-                                  'Recently Played',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                ),
-                if (state.songs.isEmpty)
-                  ListView.builder(
-                    padding: EdgeInsets.all(0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: featuredSongs.length,
-                    itemBuilder: (context, index) =>
-                        _buildSongTile(context, featuredSongs[index]),
-                  )
-                else
-                  ListView.builder(
-                    padding: EdgeInsets.all(0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.tabIndex == 0
-                        ? state.suggestions.length
-                        : state.songs.length,
-                    itemBuilder: (context, index) => _buildSongTile(
-                      context,
-                      state.tabIndex == 0
-                          ? state.suggestions[index]
-                          : state.songs[index],
+                  else
+                    ...state.randomPicks.map(
+                      (item) => _buildSongCard(
+                        item,
+                        state.randomPicks.indexOf(item) == 0,
+                        context,
+                        ref,
+                      ),
                     ),
-                  ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.25),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: state.songs.isEmpty
+                  ? Text(
+                      'Popular',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  : DefaultTabController(
+                      length: 2,
+                      child: TabBar(
+                        padding: EdgeInsets.zero,
+                        indicatorPadding: EdgeInsets.zero,
+                        labelPadding: EdgeInsets.only(right: 20),
+                        isScrollable: true,
+                        dividerHeight: 0,
+                        indicator: BoxDecoration(),
+                        tabAlignment: TabAlignment.start,
+                        labelColor: text,
+                        unselectedLabelColor: text.withOpacity(0.5),
+                        splashFactory: NoSplash.splashFactory,
+                        onTap: (value) => state.setTabIndex(value),
+                        tabs: [
+                          Tab(
+                            child: Text(
+                              'For You',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Tab(
+                            child: Text(
+                              'Recently Played',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+            if (state.songs.isEmpty)
+              ListView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: featuredSongs.length,
+                itemBuilder: (context, index) =>
+                    _buildSongTile(context, ref, featuredSongs[index]),
+              )
+            else
+              ListView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.tabIndex == 0
+                    ? state.suggestions.length
+                    : state.songs.length,
+                itemBuilder: (context, index) => _buildSongTile(
+                  context,
+                  ref,
+                  state.tabIndex == 0
+                      ? state.suggestions[index]
+                      : state.songs[index],
+                ),
+              ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSongCard(Song song, bool isFirst, BuildContext context) =>
+  Widget _buildSongCard(Song song, bool isFirst, BuildContext context, WidgetRef ref) =>
       Container(
         width: isFirst ? 170 : 120,
         margin: EdgeInsets.only(right: 10, left: isFirst ? 20 : 0),
@@ -127,7 +127,7 @@ class Featured extends StatelessWidget {
           children: [
             const SizedBox(width: 10),
             GestureDetector(
-              onTap: () => _onSongTap(context, song.id),
+              onTap: () => _onSongTap(context, ref, song.id),
               onLongPressStart: (details) {
                 final offset = details.globalPosition;
                 showMenu(
@@ -143,12 +143,12 @@ class Featured extends StatelessWidget {
                   ),
                   items: [
                     PopupMenuItem(
-                      onTap: () => _onSongTap(context, song.id),
+                      onTap: () => _onSongTap(context, ref, song.id),
                       value: 'play',
                       child: Text('Play Now'),
                     ),
                     PopupMenuItem(
-                      onTap: () => _onAddToQueue(context, song.id),
+                      onTap: () => _onAddToQueue(context, ref, song.id),
                       value: 'add',
                       child: Text('Add to Queue'),
                     ),
@@ -174,7 +174,7 @@ class Featured extends StatelessWidget {
         ),
       );
 
-  Widget _buildSongTile(BuildContext context, Song song) {
+  Widget _buildSongTile(BuildContext context, WidgetRef ref, Song song) {
     return ListTile(
       dense: true,
       leading: ClipOval(
@@ -210,26 +210,30 @@ class Featured extends StatelessWidget {
         ],
       ),
       trailing: IconButton(
-        onPressed: () => _onAddToQueue(context, song.id),
+        onPressed: () => _onAddToQueue(context, ref, song.id),
         icon: const Icon(Icons.queue_music),
       ),
-      onTap: () => _onSongTap(context, song.id),
+      onTap: () => _onSongTap(context, ref, song.id),
     );
   }
 
-  void _onSongTap(BuildContext context, String songid) {
+  Future<void> _onSongTap(
+    BuildContext context,
+    WidgetRef ref,
+    String songid,
+  ) async {
     // Play the song using the player provider
-    context.read<PlayerProvider>().playSong(songid);
+    showSnack('Playing', context);
+    await ref.read(playerProvider.notifier).playSong(songid);
   }
 
-  void _onAddToQueue(BuildContext context, String songid) {
+  Future<void> _onAddToQueue(
+    BuildContext context,
+    WidgetRef ref,
+    String songid,
+  ) async {
     // Play the song using the player provider
-    context.read<PlayerProvider>().addToQueueId(songid);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Song added to queue'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    showSnack('Song added to queue', context);
+    await ref.read(playerProvider.notifier).addToQueueId(songid);
   }
 }
