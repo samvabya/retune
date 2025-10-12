@@ -15,9 +15,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           playbackState.add(
             playbackState.value.copyWith(
               playing: true,
-              controls: [
-                MediaControl.pause,
-              ],
+              controls: [MediaControl.pause],
               processingState: AudioProcessingState.ready,
             ),
           );
@@ -26,9 +24,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           playbackState.add(
             playbackState.value.copyWith(
               playing: false,
-              controls: [
-                MediaControl.play,
-              ],
+              controls: [MediaControl.play],
               processingState: AudioProcessingState.ready,
             ),
           );
@@ -57,9 +53,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     // Initialize playback state
     playbackState.add(
       playbackState.value.copyWith(
-        controls: [
-          MediaControl.play,
-        ],
+        controls: [MediaControl.play],
         processingState: AudioProcessingState.idle,
       ),
     );
@@ -80,9 +74,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       playbackState.add(
         playbackState.value.copyWith(
           playing: true,
-          controls: [
-            MediaControl.pause,
-          ],
+          controls: [MediaControl.pause],
           processingState: AudioProcessingState.ready,
         ),
       );
@@ -140,5 +132,17 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       await _audioPlayer.dispose();
     }
     await super.customAction(name, extras);
+  }
+
+  @override
+  Future<void> onTaskRemoved() async {
+    await _audioPlayer.stop();
+    playbackState.add(
+      playbackState.value.copyWith(
+        processingState: AudioProcessingState.idle,
+        playing: false,
+      ),
+    );
+    _audioPlayer.dispose();
   }
 }
