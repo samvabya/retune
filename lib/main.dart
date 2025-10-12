@@ -11,10 +11,6 @@ import 'package:retune/util.dart';
 AudioPlayerHandler? audioHandler;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-  );
-  await HiveService.init();
   audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
@@ -24,6 +20,10 @@ Future<void> main() async {
       androidShowNotificationBadge: true,
     ),
   );
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
+  await HiveService.init();
 
   runApp(const MainApp());
 }

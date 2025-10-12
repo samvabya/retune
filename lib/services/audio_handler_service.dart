@@ -16,9 +16,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
             playbackState.value.copyWith(
               playing: true,
               controls: [
-                MediaControl.skipToPrevious,
                 MediaControl.pause,
-                MediaControl.skipToNext,
               ],
               processingState: AudioProcessingState.ready,
             ),
@@ -29,9 +27,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
             playbackState.value.copyWith(
               playing: false,
               controls: [
-                MediaControl.skipToPrevious,
                 MediaControl.play,
-                MediaControl.skipToNext,
               ],
               processingState: AudioProcessingState.ready,
             ),
@@ -62,9 +58,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     playbackState.add(
       playbackState.value.copyWith(
         controls: [
-          MediaControl.skipToPrevious,
           MediaControl.play,
-          MediaControl.skipToNext,
         ],
         processingState: AudioProcessingState.idle,
       ),
@@ -87,9 +81,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         playbackState.value.copyWith(
           playing: true,
           controls: [
-            MediaControl.skipToPrevious,
             MediaControl.pause,
-            MediaControl.skipToNext,
           ],
           processingState: AudioProcessingState.ready,
         ),
@@ -124,17 +116,17 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     await _audioPlayer.seek(position);
   }
 
-  @override
-  Future<void> skipToNext() async {
-    // This will be handled by PlayerProvider
-    await super.skipToNext();
-  }
+  // @override
+  // Future<void> skipToNext() async {
+  //   // This will be handled by PlayerProvider
+  //   await super.skipToNext();
+  // }
 
-  @override
-  Future<void> skipToPrevious() async {
-    // This will be handled by PlayerProvider
-    await super.skipToPrevious();
-  }
+  // @override
+  // Future<void> skipToPrevious() async {
+  //   // This will be handled by PlayerProvider
+  //   await super.skipToPrevious();
+  // }
 
   Future<void> setVolume(double volume) async {
     await _audioPlayer.setVolume(volume);
