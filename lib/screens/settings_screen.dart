@@ -156,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     'Play similar songs automatically',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
-                  secondary: Icon(Icons.skip_next_rounded),
+                  secondary: Icon(Icons.auto_fix_high),
                 ),
                 ListTile(
                   leading: Stack(

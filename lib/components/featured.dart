@@ -19,7 +19,7 @@ class Featured extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.23),
+            SizedBox(height: (Scaffold.of(context).appBarMaxHeight ?? 60) + 10),
             SizedBox(
               height: 190,
               child: ListView(
@@ -118,61 +118,65 @@ class Featured extends ConsumerWidget {
     );
   }
 
-  Widget _buildSongCard(Song song, bool isFirst, BuildContext context, WidgetRef ref) =>
-      Container(
-        width: isFirst ? 170 : 120,
-        margin: EdgeInsets.only(right: 10, left: isFirst ? 20 : 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: 10),
-            GestureDetector(
-              onTap: () => _onSongTap(context, ref, song.id),
-              onLongPressStart: (details) {
-                final offset = details.globalPosition;
-                showMenu(
-                  context: context,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(20),
-                  ),
-                  position: RelativeRect.fromLTRB(
-                    offset.dx,
-                    offset.dy,
-                    MediaQuery.of(context).size.width - offset.dx,
-                    MediaQuery.of(context).size.height - offset.dy,
-                  ),
-                  items: [
-                    PopupMenuItem(
-                      onTap: () => _onSongTap(context, ref, song.id),
-                      value: 'play',
-                      child: Text('Play Now'),
-                    ),
-                    PopupMenuItem(
-                      onTap: () => _onAddToQueue(context, ref, song.id),
-                      value: 'add',
-                      child: Text('Add to Queue'),
-                    ),
-                  ],
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: CachedNetworkImage(
-                  height: 170,
-                  width: 170,
-                  imageUrl: song.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+  Widget _buildSongCard(
+    Song song,
+    bool isFirst,
+    BuildContext context,
+    WidgetRef ref,
+  ) => Container(
+    width: isFirst ? 170 : 120,
+    margin: EdgeInsets.only(right: 10, left: isFirst ? 20 : 0),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: () => _onSongTap(context, ref, song.id),
+          onLongPressStart: (details) {
+            final offset = details.globalPosition;
+            showMenu(
+              context: context,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(20),
               ),
+              position: RelativeRect.fromLTRB(
+                offset.dx,
+                offset.dy,
+                MediaQuery.of(context).size.width - offset.dx,
+                MediaQuery.of(context).size.height - offset.dy,
+              ),
+              items: [
+                PopupMenuItem(
+                  onTap: () => _onSongTap(context, ref, song.id),
+                  value: 'play',
+                  child: Text('Play Now'),
+                ),
+                PopupMenuItem(
+                  onTap: () => _onAddToQueue(context, ref, song.id),
+                  value: 'add',
+                  child: Text('Add to Queue'),
+                ),
+              ],
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: CachedNetworkImage(
+              height: 170,
+              width: 170,
+              imageUrl: song.imageUrl,
+              fit: BoxFit.cover,
             ),
-            Text(
-              song.name,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ],
+          ),
         ),
-      );
+        Text(
+          song.name,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+      ],
+    ),
+  );
 
   Widget _buildSongTile(BuildContext context, WidgetRef ref, Song song) {
     return ListTile(

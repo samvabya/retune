@@ -44,6 +44,8 @@ class MainApp extends StatelessWidget {
             onPrimary: text,
             secondary: secondary,
             onSecondary: text,
+            tertiary: tertiary,
+            onTertiary: text,
             error: surface,
             onError: text,
             surface: surface,

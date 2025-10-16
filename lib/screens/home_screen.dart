@@ -6,9 +6,9 @@ import 'package:retune/providers/player_provider.dart';
 import 'package:retune/providers/song_provider.dart';
 import 'package:retune/screens/search_screen.dart';
 import 'package:retune/screens/settings_screen.dart';
-import 'package:retune/util.dart';
 import 'package:retune/components/artists.dart';
 import 'package:retune/components/featured.dart';
+import 'package:retune/util.dart';
 import 'package:retune/widgets/player_controls.dart';
 import 'package:soft_edge_blur/soft_edge_blur.dart';
 
@@ -19,9 +19,9 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStateMixin {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with TickerProviderStateMixin {
   late TabController tabController;
-  Color currentTabColor = surface;
 
   @override
   void initState() {
@@ -30,9 +30,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
   }
 
   void onTabChanged(int value) {
-    setState(() {
-      currentTabColor = [surface, secondary][value];
-    });
+    setState(() {});
   }
 
   @override
@@ -43,9 +41,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
+        leading: IconButton(onPressed: null, icon: Icon(Icons.music_note)),
         actions: [
           IconButton(
-            onPressed: () async => await ref.read(songProvider.notifier).loadSongs(),
+            onPressed: () {
+              showSnack('Playlists coming soon', context);
+            },
+            icon: Icon(Icons.playlist_add),
+          ),
+          IconButton(
+            onPressed: () async => await ref.read(songProvider.notifier).load(),
             icon: Icon(Icons.refresh),
           ),
           IconButton(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/player_provider.dart';
+import 'package:retune/providers/settings_provider.dart';
 
 class Queue extends ConsumerWidget {
   final PlayerProvider player;
@@ -12,6 +13,8 @@ class Queue extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final player = ref.watch(playerProvider);
+    final settings = ref.watch(settingsProvider);
+    var artists = player.currentSong!.artists.primary;
 
     return Container(
       color: colorScheme.primary,
@@ -38,25 +41,64 @@ class Queue extends ConsumerWidget {
               ),
               itemCount: player.queue.length,
             ),
-            Row(
-              children: [
-                Expanded(child: Divider(color: colorScheme.onPrimary)),
-                TextButton(
-                  onPressed: () {
-                    player.setQueue([
-                      ...player.queue,
-                      ...player.suggestions,
-                    ], player.currentIndex);
-                  },
-                  child: Text(
-                    'Add All',
-                    style: TextStyle(
-                      color: colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 5,
+                  children: [
+                    const SizedBox(width: 5),
+                    InputChip(
+                      label: const Text('Add All'),
+                      onPressed: () {
+                        player.setQueue([
+                          ...player.queue,
+                          ...player.suggestions,
+                        ], player.currentIndex);
+                      },
+                      side: BorderSide.none,
+                      backgroundColor: colorScheme.secondary,
+                      labelStyle: TextStyle(color: colorScheme.onPrimary),
                     ),
-                  ),
+                    InputChip(
+                      label: const Text('Auto Play'),
+                      onPressed: () => settings.toggleAutoPlay(),
+                      selected: settings.autoPlay,
+                      side: BorderSide.none,
+                      backgroundColor: colorScheme.primary,
+                      selectedColor: colorScheme.secondary,
+                      checkmarkColor: colorScheme.onPrimary,
+                      labelStyle: TextStyle(color: colorScheme.onPrimary),
+                    ),
+                    InputChip(
+                      label: const Text('Suggestions'),
+                      onPressed: () async =>
+                          await player.setQueueSuggestIndex(null),
+                      selected: player.queueSuggestIndex == null,
+                      side: BorderSide.none,
+                      backgroundColor: colorScheme.primary,
+                      selectedColor: colorScheme.secondary,
+                      checkmarkColor: colorScheme.onPrimary,
+                      labelStyle: TextStyle(color: colorScheme.onPrimary),
+                    ),
+                    ...artists.map(
+                      (artist) => InputChip(
+                        label: Text(artist.name),
+                        onPressed: () async => await player
+                            .setQueueSuggestIndex(artists.indexOf(artist)),
+                        selected:
+                            player.queueSuggestIndex == artists.indexOf(artist),
+                        side: BorderSide.none,
+                        backgroundColor: colorScheme.primary,
+                        selectedColor: colorScheme.secondary,
+                        checkmarkColor: colorScheme.onPrimary,
+                        labelStyle: TextStyle(color: colorScheme.onPrimary),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             ListView.builder(
               shrinkWrap: true,

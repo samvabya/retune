@@ -5,7 +5,9 @@ import 'package:retune/models/song.dart';
 
 class HiveService {
   static const String _songsBox = 'songs_box';
+  static const String _artistsBox = 'artists_box';
   static Box<Song>? _songsBoxInstance;
+  static Box<String>? _artistsBoxInstance;
 
   static Future<void> init() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
@@ -16,6 +18,7 @@ class HiveService {
     
     // Open boxes
     _songsBoxInstance = await Hive.openBox<Song>(_songsBox);
+    _artistsBoxInstance = await Hive.openBox<String>(_artistsBox);
   }
 
   // Add a new song
@@ -28,39 +31,19 @@ class HiveService {
     return _songsBoxInstance?.values.toList() ?? [];
   }
 
-  // Get a specific song
-  static Song? getSong(String id) {
-    return _songsBoxInstance?.get(id);
+  // Add a new artist
+  static Future<void> addArtist(String artist) async {
+    await _artistsBoxInstance?.put(artist, artist);
   }
 
-  // Update a song
-  static Future<void> updateSong(Song song) async {
-    await _songsBoxInstance?.put(song.id, song);
-  }
-
-  // Delete a song
-  static Future<void> deleteSong(String id) async {
-    await _songsBoxInstance?.delete(id);
-  }
-
-  // Delete all songs
-  static Future<void> deleteAllSongs() async {
-    await _songsBoxInstance?.clear();
-  }
-
-  // Search songs
-  static List<Song> searchSongs(String query) {
-    final allSongs = getAllSongs();
-    if (query.isEmpty) return allSongs;
-    
-    return allSongs.where((song) {
-      return song.name.toLowerCase().contains(query.toLowerCase()) ||
-             song.artists.toLowerCase().contains(query.toLowerCase());
-    }).toList();
+  // Get all artists
+  static List<String> getAllArtists() {
+    return _artistsBoxInstance?.values.toList() ?? [];
   }
 
   // Close Hive
   static Future<void> close() async {
     await _songsBoxInstance?.close();
+    await _artistsBoxInstance?.close();
   }
 }
