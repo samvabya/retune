@@ -117,7 +117,7 @@ class SaavnService {
     }
   }
 
-  Future<ArtistInfo> getArtists(String artist) async {
+  Future<ArtistInfo> getArtistByName(String artist) async {
     try {
       final url = Uri.parse(
         '$_baseUrl/search/artists?query=$artist&page=0&limit=1',

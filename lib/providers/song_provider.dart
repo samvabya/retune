@@ -9,7 +9,9 @@ import 'package:retune/services/saavn_service.dart';
 import '../models/song.dart';
 import '../services/hive_service.dart';
 
-final songProvider = ChangeNotifierProvider<SongProvider>((ref) => SongProvider());
+final songProvider = ChangeNotifierProvider<SongProvider>(
+  (ref) => SongProvider(),
+);
 
 class SongProvider with ChangeNotifier {
   List<Song> _songs = [];
@@ -31,7 +33,12 @@ class SongProvider with ChangeNotifier {
   List<DetailedSongModel> get songsByArtist => _songsByArtist;
 
   SongProvider() {
-    loadSongs();
+    load();
+  }
+
+  Future<void> load() async {
+    await loadSongs();
+    await loadArtists();
   }
 
   Future<void> loadSongs() async {
@@ -50,22 +57,42 @@ class SongProvider with ChangeNotifier {
       notifyListeners();
       if (_songs.isNotEmpty) {
         await getSuggestions(_songs[0].id);
-        await getArtists();
-      } else {
-        _artists = featuredArtists;
       }
       notifyListeners();
-
-      if (_artists.isNotEmpty) {
-        _selectedArtist = _artists[0];
-        await getSongsByArtist(_artists[0].id);
-      }
 
       _isLoading = false;
       notifyListeners();
     } on Exception catch (e) {
       _isLoading = false;
       notifyListeners();
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> loadArtists() async {
+    try {
+      var artistids = HiveService.getAllArtists();
+      artistids.sort((a, b) => b.compareTo(a));
+
+      _artists = await Future.wait(
+        artistids.map((e) async {
+          return await SaavnService().getArtistByName(e);
+        }).toList(),
+      );
+
+      notifyListeners();
+
+      if (_artists.isEmpty) {
+        _artists = featuredArtists;
+      }
+
+      if (_artists.isNotEmpty) {
+        _selectedArtist = _artists[0];
+        await getSongsByArtist(_artists[0].id);
+      }
+
+      notifyListeners();
+    } on Exception catch (e) {
       debugPrint(e.toString());
     }
   }
@@ -79,20 +106,6 @@ class SongProvider with ChangeNotifier {
           );
     } catch (e) {
       _suggestions = [];
-    }
-  }
-
-  Future<void> getArtists() async {
-    try {
-      _selectedArtist = null;
-      _artists = await Future.wait(
-        _songs[0].artists.split(', ').map((e) async {
-          return await SaavnService().getArtists(e);
-        }).toList(),
-      );
-    } catch (e) {
-      _artists = [];
-      debugPrint(e.toString());
     }
   }
 
@@ -111,14 +124,11 @@ class SongProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteSong(String id) async {
-    await HiveService.deleteSong(id);
-    _songs.removeWhere((song) => song.id == id);
+  Future<void> addArtists(List<String> artistInfos) async {
+    artistInfos.forEach(
+      (element) async => await HiveService.addArtist(element),
+    );
     notifyListeners();
-  }
-
-  List<Song> searchSongs(String query) {
-    return HiveService.searchSongs(query);
   }
 
   void setTabIndex(int index) {

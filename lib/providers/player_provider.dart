@@ -27,6 +27,7 @@ final playerProvider = ChangeNotifierProvider<PlayerProvider>(
 class PlayerProvider with ChangeNotifier {
   final SaavnService _songService = SaavnService();
   final SettingsProvider _settingsProvider = SettingsProvider();
+  final SongProvider _songProvider = SongProvider();
 
   DetailedSongModel? _currentSong;
   LocalPlayerState _state = LocalPlayerState.stopped;
@@ -37,6 +38,7 @@ class PlayerProvider with ChangeNotifier {
   bool _shuffleMode = false;
   String _errorMessage = '';
   List<DetailedSongModel> _queue = [];
+  int? _queueSuggestIndex;
   List<DetailedSongModel> _suggestions = [];
   int _currentIndex = 0;
   ColorScheme? _imageColorScheme;
@@ -51,6 +53,7 @@ class PlayerProvider with ChangeNotifier {
   bool get shuffleMode => _shuffleMode;
   String get errorMessage => _errorMessage;
   List<DetailedSongModel> get queue => _queue;
+  int? get queueSuggestIndex => _queueSuggestIndex;
   List<DetailedSongModel> get suggestions => _suggestions;
   int get currentIndex => _currentIndex;
   ColorScheme? get imageColorScheme => _imageColorScheme;
@@ -137,6 +140,7 @@ class PlayerProvider with ChangeNotifier {
         addToQueue(song);
       }
       _currentIndex = queue.indexOf(song);
+      _queueSuggestIndex = null;
 
       // Get the best quality download URL
       String? audioUrl = _getBestQualityUrl(song.downloadUrl);
@@ -151,7 +155,9 @@ class PlayerProvider with ChangeNotifier {
         title: song.name,
         artist: song.primaryArtistsText,
         artUri: Uri.parse(song.imageUrl),
-        duration: song.duration != null ? Duration(seconds: song.duration!) : null,
+        duration: song.duration != null
+            ? Duration(seconds: song.duration!)
+            : null,
       );
 
       await audioHandler?.playFromUrl(audioUrl, mediaItem);
@@ -172,7 +178,8 @@ class PlayerProvider with ChangeNotifier {
       notifyListeners();
 
       // Save the song to the local database
-      await SongProvider().addSong(song);
+      await _songProvider.addSong(song);
+      await _songProvider.addArtists(song.primaryArtistsText.split(', '));
     } catch (e) {
       _state = LocalPlayerState.error;
       _errorMessage = e.toString();
@@ -206,7 +213,7 @@ class PlayerProvider with ChangeNotifier {
       } else {
         await audioHandler?.play();
       }
-      
+
       _state = LocalPlayerState.playing;
       notifyListeners();
     } catch (e) {
@@ -380,6 +387,30 @@ class PlayerProvider with ChangeNotifier {
     } catch (e) {
       _suggestions = [];
     }
+  }
+
+  Future<void> getArtistSuggestions(String id) async {
+    try {
+      _suggestions = await SaavnService()
+          .getSongsByArtist(id)
+          .then((suggestions) => suggestions.map((e) => e).toList());
+    } catch (e) {
+      _suggestions = [];
+    }
+  }
+
+  Future<void> setQueueSuggestIndex(int? index) async {
+    _queueSuggestIndex = index;
+    notifyListeners();
+
+    if (index == null) {
+      await getSuggestions(_currentSong!.id);
+    } else {
+      await getArtistSuggestions(
+        _currentSong!.artists.primary.elementAt(index).id,
+      );
+    }
+    notifyListeners();
   }
 
   @override

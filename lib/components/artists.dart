@@ -12,54 +12,53 @@ class Artists extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(songProvider);
-    
+
     return Scaffold(
       backgroundColor: secondary,
       body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.23),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: (Scaffold.of(context).appBarMaxHeight ?? 60) + 10),
 
-                SizedBox(
-                  height: 190,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.artists.length,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () async =>
-                          await state.setArtistIndex(state.artists[index]),
-                      child: _buildArtistCard(
-                        state.artists[index],
-                        state.selectedArtist != null &&
-                            index ==
-                                state.artists.indexOf(state.selectedArtist!),
-                        context,
-                      ),
-                    ),
+            SizedBox(
+              height: 190,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: state.artists.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () async =>
+                      await state.setArtistIndex(state.artists[index]),
+                  child: _buildArtistCard(
+                    state.artists[index],
+                    state.selectedArtist != null &&
+                        index == state.artists.indexOf(state.selectedArtist!),
+                    context,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20),
-                  child: Text(
-                    state.songsByArtist.isEmpty
-                        ? 'Tap an artist to get started'
-                        : 'Songs by ${state.selectedArtist!.name}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.songsByArtist.length,
-                  itemBuilder: (context, index) =>
-                      SongCard(song: state.songsByArtist[index]),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.25),
-              ],
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, top: 20),
+              child: Text(
+                state.songsByArtist.isEmpty
+                    ? 'Tap an artist to get started'
+                    : 'Songs by ${state.selectedArtist!.name}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListView.builder(
+              padding: EdgeInsets.all(0),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.songsByArtist.length,
+              itemBuilder: (context, index) =>
+                  SongCard(song: state.songsByArtist[index]),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+          ],
+        ),
+      ),
     );
   }
 
