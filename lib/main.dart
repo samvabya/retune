@@ -16,8 +16,9 @@ Future<void> main() async {
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'com.retune.audio',
       androidNotificationChannelName: 'retune',
-      androidNotificationOngoing: true,
+      androidNotificationOngoing: false,
       androidShowNotificationBadge: true,
+      androidStopForegroundOnPause: false,
     ),
   );
   SystemChrome.setSystemUIOverlayStyle(
