@@ -2,11 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:retune/data/data.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/services/saavn_service.dart';
 import '../models/song.dart';
 import '../services/hive_service.dart';
+
+final songProvider = ChangeNotifierProvider<SongProvider>((ref) => SongProvider());
 
 class SongProvider with ChangeNotifier {
   List<Song> _songs = [];

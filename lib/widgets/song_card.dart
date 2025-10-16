@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/player_provider.dart';
 
-class SearchResultCard extends StatelessWidget {
+class SongCard extends ConsumerWidget  {
   final DetailedSongModel song;
 
-  const SearchResultCard({Key? key, required this.song}) : super(key: key);
+  const SongCard({ super.key, required this.song});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       dense: true,
       leading: ClipOval(
@@ -50,16 +50,16 @@ class SearchResultCard extends StatelessWidget {
         ],
       ),
       trailing: IconButton.filledTonal(
-        onPressed: () => _onAddToQueue(context, song),
+        onPressed: () => _onAddToQueue(context, ref, song),
         icon: const Icon(Icons.queue_music),
       ),
-      onTap: () => _onSongTap(context, song),
+      onTap: () => _onSongTap(context, ref, song),
     );
   }
 
-  void _onSongTap(BuildContext context, DetailedSongModel song) {
+  void _onSongTap(BuildContext context, WidgetRef ref, DetailedSongModel song) {
     // Play the song using the player provider
-    context.read<PlayerProvider>().playSongModel(song);
+    ref.read(playerProvider.notifier).playSongModel(song);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -69,9 +69,9 @@ class SearchResultCard extends StatelessWidget {
     );
   }
 
-  void _onAddToQueue(BuildContext context, DetailedSongModel song) {
+  void _onAddToQueue(BuildContext context, WidgetRef ref, DetailedSongModel song) {
     // Play the song using the player provider
-    context.read<PlayerProvider>().addToQueue(song);
+    ref.read(playerProvider.notifier).addToQueue(song);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

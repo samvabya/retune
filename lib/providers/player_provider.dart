@@ -1,5 +1,8 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:retune/main.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/settings_provider.dart';
 import 'package:retune/providers/song_provider.dart';
@@ -15,10 +18,13 @@ enum LocalPlayerState {
   completed,
 }
 
-enum RepeatMode { none, one, all }
+enum RepeatMode { none, one }
+
+final playerProvider = ChangeNotifierProvider<PlayerProvider>(
+  (ref) => PlayerProvider(),
+);
 
 class PlayerProvider with ChangeNotifier {
-  final AudioPlayer _audioPlayer = AudioPlayer();
   final SaavnService _songService = SaavnService();
   final SettingsProvider _settingsProvider = SettingsProvider();
 
@@ -52,7 +58,9 @@ class PlayerProvider with ChangeNotifier {
   bool get isPlaying => _state == LocalPlayerState.playing;
   bool get isPaused => _state == LocalPlayerState.paused;
   bool get isLoading => _state == LocalPlayerState.loading;
-  bool get hasNext => _currentIndex < _queue.length - 1;
+  bool get hasNextQueue => _currentIndex < _queue.length - 1;
+  bool get hasAutoPlay => _settingsProvider.autoPlay && suggestions.isNotEmpty;
+  bool get hasNext => hasNextQueue || hasAutoPlay;
   bool get hasPrevious => _currentIndex > 0;
 
   double get progress {
@@ -65,17 +73,17 @@ class PlayerProvider with ChangeNotifier {
   }
 
   void _initializePlayer() {
-    _audioPlayer.onDurationChanged.listen((Duration duration) {
+    audioHandler!.audioPlayer.onDurationChanged.listen((Duration duration) {
       _duration = duration;
       notifyListeners();
     });
 
-    _audioPlayer.onPositionChanged.listen((Duration position) {
+    audioHandler!.audioPlayer.onPositionChanged.listen((Duration position) {
       _position = position;
       notifyListeners();
     });
 
-    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+    audioHandler!.audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
       switch (state) {
         case PlayerState.playing:
           _state = LocalPlayerState.playing;
@@ -95,6 +103,11 @@ class PlayerProvider with ChangeNotifier {
           break;
       }
       notifyListeners();
+    });
+
+    // Listen to notification controls
+    audioHandler!.playbackState.listen((state) {
+      // Handle state changes if needed
     });
   }
 
@@ -125,8 +138,6 @@ class PlayerProvider with ChangeNotifier {
       }
       _currentIndex = queue.indexOf(song);
 
-      if (suggestions.contains(song) == false) {}
-
       // Get the best quality download URL
       String? audioUrl = _getBestQualityUrl(song.downloadUrl);
 
@@ -134,7 +145,16 @@ class PlayerProvider with ChangeNotifier {
         throw Exception('No audio URL available');
       }
 
-      await _audioPlayer.play(UrlSource(audioUrl));
+      // Create MediaItem for notification
+      final mediaItem = MediaItem(
+        id: song.id,
+        title: song.name,
+        artist: song.primaryArtistsText,
+        artUri: Uri.parse(song.imageUrl),
+        duration: song.duration != null ? Duration(seconds: song.duration!) : null,
+      );
+
+      await audioHandler?.playFromUrl(audioUrl, mediaItem);
       _state = LocalPlayerState.playing;
       notifyListeners();
 
@@ -163,7 +183,6 @@ class PlayerProvider with ChangeNotifier {
   String? _getBestQualityUrl(List<DownloadUrl> urls) {
     if (urls.isEmpty) return null;
 
-    // Priority order: 320kbps -> 160kbps -> 96kbps -> any available
     const qualityOrder = ['320', '160', '96'];
 
     for (String quality in qualityOrder) {
@@ -174,7 +193,6 @@ class PlayerProvider with ChangeNotifier {
       }
     }
 
-    // Return first available URL if no preferred quality found
     return urls.first.url.isNotEmpty ? urls.first.url : null;
   }
 
@@ -183,11 +201,12 @@ class PlayerProvider with ChangeNotifier {
       if (_currentSong == null) return;
 
       if (_state == LocalPlayerState.completed) {
-        _audioPlayer.seek(Duration.zero);
-        playSong(_currentSong!.id);
+        await audioHandler?.seek(Duration.zero);
+        await playSong(_currentSong!.id);
+      } else {
+        await audioHandler?.play();
       }
-
-      await _audioPlayer.resume();
+      
       _state = LocalPlayerState.playing;
       notifyListeners();
     } catch (e) {
@@ -199,7 +218,7 @@ class PlayerProvider with ChangeNotifier {
 
   Future<void> pause() async {
     try {
-      await _audioPlayer.pause();
+      await audioHandler?.pause();
       _state = LocalPlayerState.paused;
       notifyListeners();
     } catch (e) {
@@ -211,7 +230,7 @@ class PlayerProvider with ChangeNotifier {
 
   Future<void> stop() async {
     try {
-      await _audioPlayer.stop();
+      await audioHandler?.stop();
       _state = LocalPlayerState.stopped;
       _position = Duration.zero;
       notifyListeners();
@@ -224,7 +243,7 @@ class PlayerProvider with ChangeNotifier {
 
   Future<void> seek(Duration position) async {
     try {
-      await _audioPlayer.seek(position);
+      await audioHandler?.seek(position);
       _position = position;
       notifyListeners();
     } catch (e) {
@@ -237,7 +256,7 @@ class PlayerProvider with ChangeNotifier {
   Future<void> setVolume(double volume) async {
     try {
       _volume = volume.clamp(0.0, 1.0);
-      await _audioPlayer.setVolume(_volume);
+      await audioHandler?.setVolume(_volume);
       notifyListeners();
     } catch (e) {
       _state = LocalPlayerState.error;
@@ -257,9 +276,6 @@ class PlayerProvider with ChangeNotifier {
         _repeatMode = RepeatMode.one;
         break;
       case RepeatMode.one:
-        _repeatMode = RepeatMode.all;
-        break;
-      case RepeatMode.all:
         _repeatMode = RepeatMode.none;
         break;
     }
@@ -272,26 +288,27 @@ class PlayerProvider with ChangeNotifier {
   }
 
   Future<void> next() async {
-    if (!hasNext && _repeatMode != RepeatMode.all) return;
+    if (hasNextQueue) {
+      int nextIndex = _currentIndex + 1;
+      if (nextIndex >= _queue.length) {
+        nextIndex = 0;
+      }
 
-    int nextIndex = _currentIndex + 1;
-    if (nextIndex >= _queue.length && _repeatMode == RepeatMode.all) {
-      nextIndex = 0;
-    }
-
-    if (nextIndex < _queue.length) {
-      _currentIndex = nextIndex;
-      await playSongModel(_queue[_currentIndex]);
+      if (nextIndex < _queue.length) {
+        _currentIndex = nextIndex;
+        await playSongModel(_queue[_currentIndex]);
+      }
+    } else if (hasAutoPlay) {
+      _currentIndex++;
+      _suggestions.shuffle();
+      await playSongModel(_suggestions.first);
     }
   }
 
   Future<void> previous() async {
-    if (!hasPrevious && _repeatMode != RepeatMode.all) return;
+    if (!hasPrevious) return;
 
     int prevIndex = _currentIndex - 1;
-    if (prevIndex < 0 && _repeatMode == RepeatMode.all) {
-      prevIndex = _queue.length - 1;
-    }
 
     if (prevIndex >= 0) {
       _currentIndex = prevIndex;
@@ -302,13 +319,11 @@ class PlayerProvider with ChangeNotifier {
   void _handleSongCompleted() {
     switch (_repeatMode) {
       case RepeatMode.one:
-        // Replay current song
-        _audioPlayer.seek(Duration.zero);
+        audioHandler?.seek(Duration.zero);
         playSong(_currentSong!.id);
         break;
-      case RepeatMode.all:
       case RepeatMode.none:
-        if (hasNext || _repeatMode == RepeatMode.all) {
+        if (hasNext) {
           next();
         } else {
           _state = LocalPlayerState.stopped;
@@ -369,7 +384,7 @@ class PlayerProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    audioHandler?.customAction('dispose');
     super.dispose();
   }
 }

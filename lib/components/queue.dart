@@ -1,16 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/models/models.dart';
 import 'package:retune/providers/player_provider.dart';
 
-class Queue extends StatelessWidget {
-  final ColorScheme colorScheme;
+class Queue extends ConsumerWidget {
   final PlayerProvider player;
-  const Queue({super.key, required this.colorScheme, required this.player});
+  final ColorScheme colorScheme;
+  const Queue({super.key, required this.player, required this.colorScheme});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final player = ref.watch(playerProvider);
+
     return Container(
       color: colorScheme.primary,
       child: SingleChildScrollView(
@@ -28,6 +30,7 @@ class Queue extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => _buildQueueItem(
                 context,
+                ref,
                 player.queue[index],
                 colorScheme,
                 index == player.currentIndex,
@@ -60,6 +63,7 @@ class Queue extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => _buildQueueItem(
                 context,
+                ref,
                 player.suggestions[index],
                 colorScheme,
                 false,
@@ -75,6 +79,7 @@ class Queue extends StatelessWidget {
 
   Widget _buildQueueItem(
     BuildContext context,
+    WidgetRef ref,
     DetailedSongModel song,
     ColorScheme colorScheme,
     bool nowPlaying,
@@ -126,8 +131,8 @@ class Queue extends StatelessWidget {
         ),
         trailing: IconButton(
           onPressed: () => index != null && !nowPlaying
-              ? context.read<PlayerProvider>().removeFromQueue(index)
-              : context.read<PlayerProvider>().addToQueue(song),
+              ? ref.read(playerProvider.notifier).removeFromQueue(index)
+              : ref.read(playerProvider.notifier).addToQueue(song),
           icon: Icon(
             index == null
                 ? Icons.add
@@ -137,7 +142,8 @@ class Queue extends StatelessWidget {
             color: colorScheme.onPrimary,
           ),
         ),
-        onTap: () => context.read<PlayerProvider>().playSongModel(song),
+        onTap: () async =>
+            await ref.read(playerProvider.notifier).playSongModel(song),
       ),
     );
   }

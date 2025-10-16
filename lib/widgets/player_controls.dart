@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/providers/player_provider.dart';
 import 'package:retune/screens/player_screen.dart';
 
@@ -9,8 +9,9 @@ class PlayerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayerProvider>(
-      builder: (context, player, child) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final player = ref.watch(playerProvider);
         ColorScheme colorScheme =
             player.imageColorScheme ?? Theme.of(context).colorScheme;
 

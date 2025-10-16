@@ -1,16 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retune/components/queue.dart';
 import 'package:retune/providers/player_provider.dart';
+import 'package:retune/providers/settings_provider.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayerProvider>(
-      builder: (context, player, child) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final player = ref.watch(playerProvider);
+        final settings = ref.watch(settingsProvider);
         ColorScheme colorScheme =
             player.imageColorScheme ?? Theme.of(context).colorScheme;
 
@@ -164,6 +167,7 @@ class PlayerScreen extends StatelessWidget {
                         Row(
                           children: [
                             IconButton(
+                              tooltip: 'Repeat Mode',
                               onPressed: player.toggleRepeat,
                               icon: Icon(
                                 player.repeatMode == RepeatMode.one
@@ -176,10 +180,12 @@ class PlayerScreen extends StatelessWidget {
                             ),
                             Spacer(),
                             IconButton(
-                              onPressed: player.toggleShuffle,
+                              tooltip: 'Auto Play',
+                              onPressed: () async =>
+                                  await settings.toggleAutoPlay(),
                               icon: Icon(
-                                Icons.shuffle,
-                                color: player.shuffleMode
+                                Icons.skip_next_rounded,
+                                color: settings.autoPlay
                                     ? colorScheme.onPrimary
                                     : colorScheme.onPrimary.withOpacity(0.5),
                               ),
@@ -202,10 +208,8 @@ class PlayerScreen extends StatelessWidget {
                     showDragHandle: true,
                     isScrollControlled: false,
                     scrollControlDisabledMaxHeightRatio: 0.8,
-                    builder: (context) => Consumer<PlayerProvider>(
-                      builder: (context, player, _) =>
-                          Queue(colorScheme: colorScheme, player: player),
-                    ),
+                    builder: (context) =>
+                        Queue(player: player, colorScheme: colorScheme),
                   );
                 },
                 icon: Icon(Icons.queue_music, color: colorScheme.onPrimary),
