@@ -1,0 +1,11 @@
+Retune is a free and open source music player that provides a seamless music streaming experience.
+
+Features:
+- Play songs from Saavn API
+- Background playback support
+- Search for songs and artists
+- Explore your favorite artists
+- Persistent queue with brilliant suggestions
+- Fresh and ambient UI design
+
+This app streams music from Saavn and requires an internet connection.

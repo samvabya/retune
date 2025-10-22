@@ -22,7 +22,7 @@
 
 ## Features
 
-- Play (almost) any song from Jio Saavn
+- Play (almost) any song from Saavn API
 - Background playback
 - Search for songs 
 - Checkout your favorite artists

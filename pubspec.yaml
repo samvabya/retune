@@ -1,7 +1,7 @@
 name: retune
-description: "A new Flutter project."
+description: "A new Flutter Music App."
 publish_to: 'none'
-version: 1.0.2
+version: 1.0.3
 
 environment:
   sdk: ^3.9.0
