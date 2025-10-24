@@ -1012,7 +1012,7 @@ packages:
       sha256: "199bc33e746088546a39cc5f36bac5a278c5e53b40cb3196f99e7345fdcfae6b"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.22"
+    version: "6.3.10"
   url_launcher_ios:
     dependency: transitive
     description:
