@@ -18,6 +18,18 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(":app")
 }
+subprojects {
+    afterEvaluate { project ->
+        project.buildscript {
+            configurations.classpath {
+                resolutionStrategy {
+                    force 'com.android.tools.build:gradle:8.7.3'
+                }
+            }
+        }
+    }
+}
+
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
