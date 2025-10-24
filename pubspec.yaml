@@ -16,7 +16,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   http: ^1.5.0
-  package_info_plus: ^9.0.0
+  package_info_plus: ^8.3.1
   path_provider: ^2.1.5
   riverpod: ^3.0.3
   flutter_riverpod: ^3.0.3
