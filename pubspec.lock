@@ -655,7 +655,7 @@ packages:
       sha256: e122c5ea805bb6773bb12ce667611265980940145be920cd09a4b0ec0285cb16
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.20"
+    version: "2.2.10"
   path_provider_foundation:
     dependency: transitive
     description:
