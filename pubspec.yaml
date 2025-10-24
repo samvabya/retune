@@ -18,6 +18,7 @@ dependencies:
   http: ^1.5.0
   package_info_plus: ^8.3.1
   path_provider: ^2.1.4
+  path_provider_android: ^2.2.15
   riverpod: ^3.0.3
   flutter_riverpod: ^3.0.3
   soft_edge_blur: ^0.1.3
