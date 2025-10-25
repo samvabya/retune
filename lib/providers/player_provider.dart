@@ -76,6 +76,14 @@ class PlayerProvider with ChangeNotifier {
   }
 
   void _initializePlayer() {
+    audioHandler!.onSkipToNext = () async {
+    await next();
+  };
+  
+  audioHandler!.onSkipToPrevious = () async {
+    await previous();
+  };
+
     audioHandler!.audioPlayer.onDurationChanged.listen((Duration duration) {
       _duration = duration;
       notifyListeners();

@@ -72,7 +72,7 @@ class SongProvider with ChangeNotifier {
   Future<void> loadArtists() async {
     try {
       var artistids = HiveService.getAllArtists();
-      artistids.sort((a, b) => b.compareTo(a));
+      artistids.sort((a, b) => a.compareTo(b));
 
       _artists = await Future.wait(
         artistids.map((e) async {

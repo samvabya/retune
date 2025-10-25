@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:retune/providers/settings_provider.dart';
 import 'package:retune/screens/home_screen.dart';
 import 'package:retune/services/audio_handler_service.dart';
 import 'package:retune/services/hive_service.dart';
@@ -25,6 +26,7 @@ Future<void> main() async {
     SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
   await HiveService.init();
+  await SettingsProvider().init();
 
   runApp(const MainApp());
 }

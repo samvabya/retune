@@ -139,6 +139,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SwitchListTile(
                   value: state.autoPlay,
                   onChanged: (value) async => await state.setAutoPlay(value),
+                  title: Text('Auto Play'),
+                  subtitle: Text(
+                    'Play similar songs automatically',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  secondary: Icon(Icons.auto_fix_high),
+                ),
+                ListTile(
                   title: Badge(
                     label: Text(
                       'NEW',
@@ -149,14 +157,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     backgroundColor: Colors.red,
-                    offset: Offset(-115, 0),
-                    child: Text('Auto Play'),
+                    offset: Offset(-90, 0),
+                    child: Text('Enhanced Suggestions'),
                   ),
                   subtitle: Text(
-                    'Play similar songs automatically',
+                    'New Advanced Suggestions Algorithm',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
-                  secondary: Icon(Icons.auto_fix_high),
+                  leading: Icon(Icons.auto_mode),
                 ),
                 ListTile(
                   leading: Stack(
@@ -179,7 +187,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       context,
                     ),
                     tooltip: 'Sponsor this app',
-                    icon: Icon(Icons.money),
+                    icon: Icon(Icons.favorite_border),
                   ),
                 ),
                 ListTile(
@@ -227,11 +235,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                ),
-                SwitchListTile(
-                  value: sendData,
-                  onChanged: (_) => setState(() => sendData = !sendData),
-                  title: Text('Send Diagnostics'),
                 ),
                 ListTile(
                   title: Text('Check for Updates'),

@@ -3,6 +3,8 @@ import 'package:audioplayers/audioplayers.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   final AudioPlayer _audioPlayer = AudioPlayer();
+  Function()? onSkipToNext;
+  Function()? onSkipToPrevious;
 
   AudioPlayerHandler() {
     _init();
@@ -15,7 +17,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           playbackState.add(
             playbackState.value.copyWith(
               playing: true,
-              controls: [MediaControl.pause],
+              controls: [MediaControl.skipToPrevious, MediaControl.pause, MediaControl.skipToNext],
               processingState: AudioProcessingState.ready,
             ),
           );
@@ -24,7 +26,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
           playbackState.add(
             playbackState.value.copyWith(
               playing: false,
-              controls: [MediaControl.play],
+              controls: [MediaControl.skipToPrevious, MediaControl.play, MediaControl.skipToNext],
               processingState: AudioProcessingState.ready,
             ),
           );
@@ -53,7 +55,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     // Initialize playback state
     playbackState.add(
       playbackState.value.copyWith(
-        controls: [MediaControl.play],
+        controls: [MediaControl.skipToPrevious, MediaControl.play, MediaControl.skipToNext],
         processingState: AudioProcessingState.idle,
       ),
     );
@@ -74,7 +76,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       playbackState.add(
         playbackState.value.copyWith(
           playing: true,
-          controls: [MediaControl.pause],
+          controls: [MediaControl.skipToPrevious, MediaControl.pause, MediaControl.skipToNext],
           processingState: AudioProcessingState.ready,
         ),
       );
@@ -108,17 +110,21 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     await _audioPlayer.seek(position);
   }
 
-  // @override
-  // Future<void> skipToNext() async {
-  //   // This will be handled by PlayerProvider
-  //   await super.skipToNext();
-  // }
+  @override
+  Future<void> skipToNext() async {
+    if (onSkipToNext != null) {
+      onSkipToNext!();
+    }
+    await super.skipToNext();
+  }
 
-  // @override
-  // Future<void> skipToPrevious() async {
-  //   // This will be handled by PlayerProvider
-  //   await super.skipToPrevious();
-  // }
+  @override
+  Future<void> skipToPrevious() async {
+    if (onSkipToPrevious != null) {
+      onSkipToPrevious!();
+    }
+    await super.skipToPrevious();
+  }
 
   Future<void> setVolume(double volume) async {
     await _audioPlayer.setVolume(volume);
