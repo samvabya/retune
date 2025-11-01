@@ -32,7 +32,6 @@
 ## Installation
 
 [<img height="80" alt="Frame 1" src="https://github.com/user-attachments/assets/196005dd-a3d5-4d46-8483-0adef38518cc" />](https://github.com/samvabya/retune/releases/latest)
-[<img height="80" alt="Frame 2" src="https://github.com/user-attachments/assets/cb0112a9-3baf-4be6-8495-f1d424eeae5c" />](https://retune.en.uptodown.com/android)
 
 ## Tech Stack
 
