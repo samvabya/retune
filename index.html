@@ -26,9 +26,15 @@
           --color-surface: #121212;
           --color-light: #e9e9e9;
         }
+        :root {
+          color-scheme: only light;
+        }
     </style>
     <title>Retune by Samvabya</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <meta name="google-site-verification" content="Pdb0NqROpXvteVKIFn2GWhYiVCmQBf0axWQhFC6rSAw" />
 
@@ -44,7 +50,7 @@
     <meta name="twitter:description" content="Retune Music - Open Source Music Streaming">
     <meta name="twitter:image" content="https://repository-images.githubusercontent.com/1061941149/a297f9b2-0afe-461a-b8d9-625dcfb2b83b">
   </head>
-  <body>
+  <body class="font-['Inter_Tight']">
     <nav class="bg-surface">
       <div
         class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
@@ -97,6 +103,13 @@
           >
             <li>
               <a
+                href="https://samvabya.github.io"
+                class="block py-2 px-3 text-white rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0 "
+                >Creator</a
+              >
+            </li>
+            <li>
+              <a
                 href="https://github.com/samvabya/retune"
                 class="block py-2 px-3 text-white rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0 "
                 >Repository</a
@@ -111,16 +124,9 @@
             </li>
             <li>
               <a
-                href="#features"
+                href="https://github.com/samvabya/retune/issues"
                 class="block py-2 px-3 text-white rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0 "
-                >Features</a
-              >
-            </li>
-            <li>
-              <a
-                href="#testimonials"
-                class="block py-2 px-3 text-white rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0 "
-                >Testimonials</a
+                >Issues</a
               >
             </li>
           </ul>
@@ -161,7 +167,7 @@
                 </div>
 
             </div>    
-            <div class="mr-auto place-self-center lg:col-span-7">
+            <div class="mr-auto place-self-center lg:col-span-7 mt-6">
                 <h1 class="max-w-2xl mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-4xl xl:text-5xl text-white mt-4">Why Retune?</h1>
                 <ul class="max-w-2xl font-light text-white md:text-lg lg:text-xl list-disc list-inside">
                     <li>A Fresh Vibrant UI Design</li>
