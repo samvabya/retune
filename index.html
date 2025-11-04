@@ -21,6 +21,45 @@
           });
         });
     </script>
+      <script>
+          function scrollToSlide(index) {
+              const slider = document.getElementById('mobileSlider');
+              if (slider) {
+                  const slideWidth = slider.offsetWidth;
+                  slider.scrollTo({
+                      left: slideWidth * index,
+                      behavior: 'smooth'
+                  });
+              }
+          }
+  
+          function updateDots() {
+              const slider = document.getElementById('mobileSlider');
+              const dots = document.querySelectorAll('.dot');
+              
+              if (slider && dots.length > 0) {
+                  const slideWidth = slider.offsetWidth;
+                  const currentSlide = Math.round(slider.scrollLeft / slideWidth);
+                  
+                  dots.forEach((dot, index) => {
+                      if (index === currentSlide) {
+                          dot.classList.add('active');
+                      } else {
+                          dot.classList.remove('active');
+                      }
+                  });
+              }
+          }
+  
+          // Initialize when DOM is ready
+          document.addEventListener('DOMContentLoaded', function() {
+              const slider = document.getElementById('mobileSlider');
+              if (slider) {
+                  slider.addEventListener('scroll', updateDots);
+                  updateDots();
+              }
+          });
+      </script>
     <style type="text/tailwindcss">
         @theme {
           --color-surface: #121212;
@@ -28,6 +67,27 @@
         }
         :root {
           color-scheme: only light;
+        }
+    </style>
+    <style>
+        .slider-container {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .slider-container::-webkit-scrollbar {
+            display: none;
+        }
+        .slider-item {
+            scroll-snap-align: center;
+        }
+        .dot {
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background-color: #1f2937;
+            width: 2rem;
         }
     </style>
     <title>Retune by Samvabya</title>
@@ -141,14 +201,14 @@
                 <p class="max-w-2xl mb-6 font-medium text-yellow-300 lg:mb-8 md:text-lg lg:text-xl">Over 500+ Downloads.</p>
                 <a href="https://github.com/samvabya/retune/releases/latest" class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-full bg-red-700 hover:bg-white hover:text-red-700">
                     Download App
-                    <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <svg class="w-5 h-5 ml-2 -mr-1 transform rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </a>
                 <a href="https://github.com/samvabya/retune" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-full hover:text-yellow-300">
                     View Github
                 </a> 
             </div>
             <div class="lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="https://i.postimg.cc/wv0qzfX7/Picsart-25-11-03-12-37-18-393.png" alt="mockup">
+                <img src="https://i.postimg.cc/76JPjh05/image1b-removebg-preview.png" alt="mockup">
             </div>                
         </div>
     </section>
@@ -175,42 +235,89 @@
         </div>
     </section>
     <section class="bg-surface" id="screenshots">
-        <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-3">
-            <div class="lg:mt-0 lg:col-span-1 lg:flex">
-                <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
-                    <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
-                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
-                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
-                    <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
-                    <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
-                        <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-29-22-06_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
-                    </div>
-                </div>
-            </div>   
-            <div class="lg:mt-0 lg:col-span-1 lg:flex hidden">
-                <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
-                    <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
-                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
-                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
-                    <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
-                    <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
-                        <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-30-28-29_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
-                    </div>
-                </div>
-            </div>   
-            <div class="lg:mt-0 lg:col-span-1 lg:flex hidden">
-                <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
-                    <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
-                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
-                    <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
-                    <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
-                    <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
-                        <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-45-29-99_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
-                    </div>
-                </div>
-            </div>   
-        </div>
-    </section>
+          <!-- Desktop View: 3 images side by side -->
+          <div class="hidden lg:grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-3">
+              <div class="lg:mt-0 lg:col-span-1 lg:flex">
+                  <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                      <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                      <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+                      <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+                      <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+                      <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
+                          <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-29-22-06_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
+                      </div>
+                  </div>
+              </div>   
+              <div class="lg:mt-0 lg:col-span-1 lg:flex">
+                  <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                      <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                      <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+                      <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+                      <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+                      <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
+                          <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-30-28-29_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
+                      </div>
+                  </div>
+              </div>   
+              <div class="lg:mt-0 lg:col-span-1 lg:flex">
+                  <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                      <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                      <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+                      <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+                      <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+                      <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
+                          <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-45-29-99_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
+                      </div>
+                  </div>
+              </div>   
+          </div>
+  
+          <!-- Mobile View: Slider -->
+          <div class="lg:hidden px-4 py-8">
+              <div class="slider-container overflow-x-auto flex gap-4" id="mobileSlider">
+                  <div class="slider-item flex-shrink-0 w-full flex justify-center">
+                      <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                          <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                          <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+                          <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+                          <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+                          <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
+                              <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-29-22-06_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="slider-item flex-shrink-0 w-full flex justify-center">
+                      <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                          <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                          <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+                          <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+                          <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+                          <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
+                              <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-30-28-29_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="slider-item flex-shrink-0 w-full flex justify-center">
+                      <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+                          <div class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+                          <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+                          <div class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+                          <div class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+                          <div class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white">
+                              <img src="https://raw.githubusercontent.com/samvabya/retune/refs/heads/master/screenshots/Screenshot_2025-10-08-11-45-29-99_21c41934a74e1eaf4e4503ada074b346.jpg" class="w-[272px] h-[572px]" alt="">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+  
+              <!-- Pagination Dots -->
+              <div class="flex justify-center gap-2 mt-6">
+                  <button class="dot w-2 h-2 rounded-full bg-gray-400 active" onclick="scrollToSlide(0)"></button>
+                  <button class="dot w-2 h-2 rounded-full bg-gray-400" onclick="scrollToSlide(1)"></button>
+                  <button class="dot w-2 h-2 rounded-full bg-gray-400" onclick="scrollToSlide(2)"></button>
+              </div>
+          </div>
+      </section>
     <section class="bg-surface" id="testimonials">
         <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-6">
             <div class="mx-auto max-w-screen-sm">
@@ -291,9 +398,6 @@
                 </li>
                 <li>
                     <a href="https://github.com/samvabya/retune" class="mr-4 hover:underline md:mr-6">Github</a>
-                </li>
-                <li>
-                    <a href="https://www.reddit.com/r/selfhosted/comments/1olfzt7/retune_music_for_aesthetic_mfs/" class="mr-4 hover:underline md:mr-6">Reddit</a>
                 </li>
                 <li>
                     <a href="https://github.com/samvabya/retune/blob/master/LICENSE" class="mr-4 hover:underline md:mr-6 ">License</a>
