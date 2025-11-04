@@ -4,7 +4,8 @@ publish_to: 'none'
 version: 1.0.4+5
 
 environment:
-  sdk: ^3.9.0
+  sdk: 3.9.2
+  flutter: 3.35.6
 
 dependencies:
   audioplayers: ^6.5.1
