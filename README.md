@@ -22,7 +22,7 @@
 
 ## Features
 
-- Play (almost) any song from Saavn API
+- Play (almost) any song from Indian Server
 - Background playback
 - Search for songs 
 - Checkout your favorite artists
